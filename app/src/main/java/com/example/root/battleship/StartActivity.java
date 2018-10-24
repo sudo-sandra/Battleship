@@ -17,10 +17,10 @@ public class StartActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.offlineGameBtn:
                 openGameMenuActivity();
-                return;
+                break;
             case R.id.onlineGameBtn:
                 openLoginActivity();
-                return;
+                break;
         }
     }
 
