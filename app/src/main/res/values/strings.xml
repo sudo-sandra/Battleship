@@ -1,4 +1,18 @@
 <resources>
-    <string name="app_name">Schiffe versenken</string>
+    <string name="app_name">Battleship</string>
+
+    //Button
     <string name="button_end">End</string>
+    <string name="loginBtn">Login</string>
+    <string name="registerBtn">Register</string>
+    <string name="onlineGameBtn">Online Game</string>
+    <string name="offlineGameBtn">Offline Game</string>
+
+    //Textfield
+    <string name="usernameTxt">Username</string>
+    <string name="passwordTxt">Password</string>
+
+    //Errors
+    <string name="failedLoginMsg">Please check your username and password. Something seems wrong</string>
+    <string name="unknownUserAlert">unknown User</string>
 </resources>
