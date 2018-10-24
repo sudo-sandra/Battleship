@@ -59,11 +59,9 @@ public class DBConnection {
         String useDB = "USE `" + dbName + "`";
         String query = "SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO'";
 
-        Statement stmt = null;
-
         try {
             connection.setAutoCommit(false);
-            stmt = connection.createStatement();
+            Statement stmt = connection.createStatement();
             stmt.addBatch(createDB);
             stmt.addBatch(useDB);
             stmt.addBatch(query);
@@ -83,10 +81,9 @@ public class DBConnection {
             PreparedStatement stmt = connection.prepareStatement(selectData);
             stmt.setString(1, name);
             ResultSet rsUserData = stmt.executeQuery();
-            if(rsUserData.next() == true) {
+            if(rsUserData.next()) {
                 System.out.print("getting Data worked");
-                User user = new User(rsUserData.getString(1), rsUserData.getString(2));
-                return user;
+                return new User(rsUserData.getString(1), rsUserData.getString(2));
             }
         }catch (SQLException e) {
             throw new NullPointerException("User not found");
