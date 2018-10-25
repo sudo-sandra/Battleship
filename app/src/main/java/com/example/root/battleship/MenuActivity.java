@@ -3,7 +3,6 @@ package com.example.root.battleship;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.example.root.schiffeversenken.R;
 
 public class MenuActivity extends AppCompatActivity {
 

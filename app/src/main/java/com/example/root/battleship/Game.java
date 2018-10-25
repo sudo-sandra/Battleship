@@ -11,7 +11,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.root.schiffeversenken.R;
 
 public class Game extends AppCompatActivity implements View.OnClickListener{
 

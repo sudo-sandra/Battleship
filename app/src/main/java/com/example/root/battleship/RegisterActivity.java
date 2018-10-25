@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
-import com.example.root.schiffeversenken.R;
-
 public class RegisterActivity extends AppCompatActivity {
 
     @Override
