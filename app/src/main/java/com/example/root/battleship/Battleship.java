@@ -1,4 +1,4 @@
-package com.example.root.schiffeversenken;
+package com.example.root.battleship;
 
 import java.util.ArrayList;
 import java.util.Random;
