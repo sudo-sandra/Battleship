@@ -1,4 +1,4 @@
-package com.example.root.schiffeversenken;
+package com.example.root.battleship;
 
 import android.graphics.Color;
 import android.support.v7.app.ActionBar;
@@ -10,6 +10,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 public class Game extends AppCompatActivity implements View.OnClickListener{
 
