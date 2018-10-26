@@ -16,7 +16,6 @@
         android:layout_marginRight="80dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -25,27 +24,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="@string/usernameTxtField" />
+            android:hint="@string/usernameTxtField"
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/passwordLoginField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPassword"
-            android:hint="@string/passwordTxtField" />
+            android:hint="@string/passwordTxtField"
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/loginBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="onClick"
             android:text="@string/loginBtn" />
 
         <Button
             android:id="@+id/registerBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="onClick"
             android:text="@string/registerBtn" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

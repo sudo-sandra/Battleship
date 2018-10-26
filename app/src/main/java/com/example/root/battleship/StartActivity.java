@@ -31,7 +31,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void openGameMenuActivity() {
-        Intent gameMenuIntent = new Intent(this, Battleship.class);
+        Intent gameMenuIntent = new Intent(this, MenuActivity.class);
         startActivity(gameMenuIntent);
     }
 }
