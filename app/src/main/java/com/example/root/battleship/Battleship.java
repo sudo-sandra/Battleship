@@ -5,8 +5,15 @@ import java.util.Random;
 
 public class Battleship {
     private Integer[][] map = new Integer[10][10];
+    private int shipFields;
+    private int destroyedShipFields = 0;
 
     public Battleship(){
+        create_ships();
+        print_map();
+    }
+
+    public void create_ships(){
         for(int i =0; i<10; i++){
             for(int k=0;k<10;k++){
                 map[i][k] = 0;
@@ -16,7 +23,7 @@ public class Battleship {
         setShips(2, 3);
         setShips(3, 2);
         setShips(2, 1);
-        print_map();
+        shipFields = 1*4 + 2*3 + 3*2 + 2*1;
     }
 
     public void print_map(){
@@ -32,9 +39,19 @@ public class Battleship {
         return map;
     }
 
-    public boolean destroyField(int y, int x){
+    public int destroyField(int y, int x){
         map[y][x] += 2;
-        return isDestroyed(y, x);
+        if(isShip(y, x)){
+            destroyedShipFields++;
+            if(destroyedShipFields == shipFields){
+                System.out.println("You have won!!");
+                return 3;
+            }
+        }
+        if(isDestroyed(y, x)){
+            return 2;
+        }
+        return 1;
     }
 
     private boolean isDestroyed(int y, int x){
@@ -133,60 +150,60 @@ public class Battleship {
         return true;
     }
 
-    private boolean isValidShipPlace(int x_pos, int y_pos){
+    private boolean isValidShipPlace(int y_pos, int x_pos){
         if(x_pos < 0 || x_pos > 9 || y_pos < 0 || y_pos > 9){
             return false;
         }
         try {
-            if(isShip(map,x_pos,y_pos)){
+            if(isShip(y_pos, x_pos)){
                 return false;
             }
         }
         catch(ArrayIndexOutOfBoundsException exception) {}
         try {
-            if(isShip(map,x_pos-1,y_pos-1)){
+            if(isShip(y_pos-1,x_pos-1)){
                 return false;
             }
         }
         catch(ArrayIndexOutOfBoundsException exception) {}
         try {
-            if(isShip(map,x_pos+1,y_pos+1)){
+            if(isShip(y_pos+1,x_pos+1)){
                 return false;
             }
         }
         catch(ArrayIndexOutOfBoundsException exception) {}
         try {
-            if(isShip(map,x_pos+1,y_pos-1)){
+            if(isShip(y_pos+1,x_pos-1)){
                 return false;
             }
         }
         catch(ArrayIndexOutOfBoundsException exception) {}
         try {
-            if(isShip(map,x_pos-1,y_pos+1)){
+            if(isShip(y_pos-1,x_pos+1)){
                 return false;
             }
         }
         catch(ArrayIndexOutOfBoundsException exception) {}
         try {
-            if(isShip(map,x_pos-1,y_pos)){
+            if(isShip(y_pos-1, x_pos)){
                 return false;
             }
         }
         catch(ArrayIndexOutOfBoundsException exception) {}
         try {
-            if(isShip(map,x_pos,y_pos-1)){
+            if(isShip(y_pos,x_pos-1)){
                 return false;
             }
         }
         catch(ArrayIndexOutOfBoundsException exception) {}
         try {
-            if(isShip(map,x_pos+1,y_pos)){
+            if(isShip(y_pos+1, x_pos)){
                 return false;
             }
         }
         catch(ArrayIndexOutOfBoundsException exception) {}
         try {
-            if(isShip(map,x_pos,y_pos+1)){
+            if(isShip(y_pos,x_pos+1)){
                 return false;
             }
         }
@@ -194,7 +211,7 @@ public class Battleship {
         return true;
     }
 
-    private boolean isShip(Integer[][] map, int x_pos, int y_pos){
-        return(map[x_pos][y_pos] == 1);
+    private boolean isShip(int y_pos, int x_pos){
+        return(map[y_pos][x_pos] == 1 || map[y_pos][x_pos] == 3);
     }
 }
