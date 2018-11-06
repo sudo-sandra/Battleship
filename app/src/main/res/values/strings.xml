@@ -7,6 +7,8 @@
     <string name="registerBtn">Register</string>
     <string name="offlineGameBtn">Offline Game</string>
     <string name="onlineGameBtn">Online Game</string>
+    <string name="okBtn">OK</string>
+    <string name="autoBtn">Auto</string>
 
     //Textfield
     <string name="usernameTxtField">Username</string>
