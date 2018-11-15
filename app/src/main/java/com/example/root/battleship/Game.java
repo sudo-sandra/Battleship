@@ -1,14 +1,12 @@
 package com.example.root.battleship;
 
 import android.graphics.Color;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class Game extends AppCompatActivity implements View.OnClickListener{
@@ -23,7 +21,7 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_game);
-        setContentView(R.layout.map_test);
+        setContentView(R.layout.game);
 
         set_up_map();
         float size = new Button(this).getTextSize();
