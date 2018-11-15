@@ -20,7 +20,8 @@ public class LoginActivity extends AppCompatActivity {
             case R.id.loginBtn:
                 EditText usernameTxt = findViewById(R.id.usernameLoginField);
                 EditText passwordTxt = findViewById(R.id.passwordLoginField);
-
+                DBConnection connection = new DBConnection();
+                connection.selectUserData(usernameTxt.toString(), passwordTxt.toString());
                 openGameMenuActivity();
                 break;
             case R.id.registerBtn:

@@ -53,7 +53,7 @@ public class DBConnection {
 
     //Creating Database if not exists
     private void createDatabase() {
-        String dbName = "userdata";
+        String dbName = "battleship";
         String createDB = "CREATE DATABASE IF NOT EXISTS `" + dbName + "`";
         String useDB = "USE `" + dbName + "`";
         String query = "SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO'";
@@ -73,7 +73,21 @@ public class DBConnection {
         }
     }
 
-    public User selectUserData (String name) {
+    public void insertUserData(String username, String password) {
+        String insertData = "INSERT INTO userdata (username, password) VALUES (?,?);";
+
+        try {
+            PreparedStatement stmt = connection.prepareStatement(insertData);
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            stmt.executeQuery();
+            System.out.print("Insert successful");
+        }catch (SQLException e) {
+            throw new NullPointerException("No Data to insert");
+        }
+    }
+
+    public User selectUserData (String name, String passwd) {
         String selectData = "SELECT username, password FROM userdata WHERE username = ?;";
 
         try {

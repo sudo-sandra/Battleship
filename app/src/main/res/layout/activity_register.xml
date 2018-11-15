@@ -36,12 +36,12 @@
             android:hint="@string/passwordTxtField" />
 
         <EditText
-            android:id="@+id/passwordRegisterField2"
+            android:id="@+id/repasswordRegisterField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPassword"
-            android:hint="@string/passwordTxtField" />
+            android:hint="@string/passwordTxtField"
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/registerBtn"
