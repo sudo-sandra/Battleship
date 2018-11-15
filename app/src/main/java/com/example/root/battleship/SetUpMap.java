@@ -19,7 +19,7 @@ public class SetUpMap extends AppCompatActivity implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.set_up_map);
-        TableRow.LayoutParams layout_params = new TableRow.LayoutParams(50, 50);
+        TableRow.LayoutParams layout_params = new TableRow.LayoutParams(55, 55);
         layout_params.setMargins(5,5,5,5);
         View[] ships = new View[10];
         for (int i = 0; i < 10; i++) {
@@ -27,6 +27,11 @@ public class SetUpMap extends AppCompatActivity implements View.OnClickListener{
             ships[i].setLayoutParams(layout_params);
             ships[i].setBackgroundColor(Color.RED);
         }
+        TextView title = (TextView) findViewById(R.id.title);
+        title.setTextSize(32);
+        // TODO: set bold
+        title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        title.setTextColor(Color.rgb(150, 180, 255));
         TableLayout legend = (TableLayout) findViewById(R.id.legendLayout);
         int count = 0;
         for(int i = 0; i < 4 ; i++){
@@ -64,8 +69,11 @@ public class SetUpMap extends AppCompatActivity implements View.OnClickListener{
     }
 
     private void openGameActivity() {
-        Intent loginIntent = new Intent(this, Game.class);
-        startActivity(loginIntent);
+        Intent gameIntent = new Intent(this, Game.class);
+//        Bundle extras = new Bundle();
+//        //TODO pass battle to Game
+//        extras.putIntArray("map", battle);
+        startActivity(gameIntent);
     }
 
     public Battleship getBattle(){

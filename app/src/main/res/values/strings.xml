@@ -13,4 +13,5 @@
     //Textfield
     <string name="usernameTxtField">Username</string>
     <string name="passwordTxtField">Password</string>
+    <string name="set_up_title">Please set up your map</string>
 </resources>

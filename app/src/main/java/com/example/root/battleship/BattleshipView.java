@@ -33,7 +33,7 @@ public class BattleshipView{
     }
 
     private void create_map(){
-        TableRow.LayoutParams layout_params = new TableRow.LayoutParams(50, 50);
+        TableRow.LayoutParams layout_params = new TableRow.LayoutParams(55, 55);
         layout_params.setMargins(5,5,5,5);
         for(int i = 0; i < 10; i++) {
             rows[i] = new TableRow(context);
@@ -58,7 +58,7 @@ public class BattleshipView{
         for(int i = 0; i < 10; i++){
             for(int k = 0; k < 10; k++){
                 if(editable) {
-                    view_map[i][k].setBackgroundColor(Color.BLACK);
+                    view_map[i][k].setBackgroundColor(Color.rgb(200, 220, 255));
                     view_map[i][k].setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
                             int id = v.getId();
@@ -78,7 +78,7 @@ public class BattleshipView{
                                         break;
                                     }
                                     activity.findViewById(ship[i][0] * 10 + ship[i][1]).
-                                            setBackgroundColor(Color.GREEN);
+                                            setBackgroundColor(Color.rgb(0, 200, 0));
                                 }
                                 //TODO: all boders blue
                             }
@@ -86,7 +86,7 @@ public class BattleshipView{
                                 for (int m = 0; m < 10; m++) {
                                     for (int n = 0; n < 10; n++) {
                                         if (map[m][n] == 0) {
-                                            view_map[m][n].setBackgroundColor(Color.BLUE);
+                                            view_map[m][n].setBackgroundColor(Color.rgb(0, 0, 200));
                                         }
                                     }
                                 }
@@ -96,10 +96,12 @@ public class BattleshipView{
                 }
                 else{
                     if (map[i][k] == 0) {
-                        view_map[i][k].setBackgroundColor(Color.BLUE);
+                        view_map[i][k].setBackgroundColor(Color.rgb(0, 0, 200));
+
                     }
                     else if (map[i][k] == 1){
-                        view_map[i][k].setBackgroundColor(Color.RED);
+                        view_map[i][k].setBackgroundColor(Color.rgb(200, 0, 0));
+
                     }
                 }
             }
