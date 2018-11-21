@@ -9,9 +9,16 @@
     <string name="onlineGameBtn">Online Game</string>
     <string name="okBtn">OK</string>
     <string name="autoBtn">Auto</string>
+    <string name="pcBtn">PC</string>
+    <string name="twoPlayerBtn">2 Player</string>
+    <string name="startBtn">Start</string>
 
     //Textfield
     <string name="usernameTxtField">Username</string>
     <string name="passwordTxtField">Password</string>
+    <string name="playerOneTxtField">Player One</string>
+    <string name="playerTwoTxtField">Player Two</string>
     <string name="set_up_title">Please set up your map</string>
+    <string name="offlineMenuHeader">Select play mode</string>
+    <string name="OfflineLoginHeader">Type in your names</string>
 </resources>

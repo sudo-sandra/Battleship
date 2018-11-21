@@ -27,11 +27,6 @@ public class SetUpMap extends AppCompatActivity implements View.OnClickListener{
             ships[i].setLayoutParams(layout_params);
             ships[i].setBackgroundColor(Color.RED);
         }
-        TextView title = (TextView) findViewById(R.id.title);
-        title.setTextSize(32);
-        // TODO: set bold
-        title.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        title.setTextColor(Color.rgb(150, 180, 255));
         TableLayout legend = (TableLayout) findViewById(R.id.legendLayout);
         int count = 0;
         for(int i = 0; i < 4 ; i++){
