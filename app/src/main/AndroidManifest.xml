@@ -33,6 +33,10 @@
             android:screenOrientation="landscape" />
         <activity android:name=".SetUpMap"
             android:screenOrientation="landscape" />
+        <activity android:name=".OfflineMenu"
+            android:screenOrientation="landscape" />
+        <activity android:name=".OfflineLogin"
+            android:screenOrientation="landscape" />
     </application>
 
 

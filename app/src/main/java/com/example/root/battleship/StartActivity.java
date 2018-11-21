@@ -17,7 +17,7 @@ public class StartActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.offlineGameBtn:
-                openGameMenuActivity();
+                openOfflineMenu();
                 break;
             case R.id.onlineGameBtn:
                 openLoginActivity();
@@ -35,8 +35,8 @@ public class StartActivity extends AppCompatActivity {
     //    startActivity(gameMenuIntent);
     //}
 
-    private void openGameMenuActivity() {
-        Intent gameMenuIntent = new Intent(this, SetUpMap.class);
+    private void openOfflineMenu() {
+        Intent gameMenuIntent = new Intent(this, OfflineMenu.class);
         startActivity(gameMenuIntent);
     }
 }

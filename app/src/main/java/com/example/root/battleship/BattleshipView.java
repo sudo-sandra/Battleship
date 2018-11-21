@@ -33,7 +33,8 @@ public class BattleshipView{
     }
 
     private void create_map(){
-        TableRow.LayoutParams layout_params = new TableRow.LayoutParams(55, 55);
+        //TODO: scale to right size not 50
+        TableRow.LayoutParams layout_params = new TableRow.LayoutParams(50, 50);
         layout_params.setMargins(5,5,5,5);
         for(int i = 0; i < 10; i++) {
             rows[i] = new TableRow(context);

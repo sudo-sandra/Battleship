@@ -10,7 +10,7 @@ public class Battleship {
 
     public Battleship(){
         create_ships();
-        print_map();
+        create_ships();
     }
 
     public void create_ships(){
