@@ -1,14 +1,35 @@
 package com.example.root.battleship;
 
-import java.sql.Connection;
+/*import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Statement;*/
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class DBConnection {
-    private Connection connection;
+
+    public DBConnection() {
+
+    }
+
+    public FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+    private void openFirebaseConnection () {
+        DatabaseReference dbRef = database.getReference("Battleship-2018");
+    }
+
+    public void insertNewUser(String username, String password) {
+        User user = new User(username, password);
+        DatabaseReference usersRef = database.getReference("Battleship-2018").child("userdata");
+        System.out.println("inserted");
+        usersRef.setValue(user);
+    }
+
+    /*private Connection connection;
 
     static {
         try {
@@ -102,5 +123,5 @@ public class DBConnection {
             throw new NullPointerException("User not found");
         }
         return null;
-    }
+    }*/
 }

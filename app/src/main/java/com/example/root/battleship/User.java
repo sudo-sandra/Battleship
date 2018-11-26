@@ -1,6 +1,7 @@
 package com.example.root.battleship;
 
 public class User {
+    private Integer id;
     private String name;
     private String password;
 

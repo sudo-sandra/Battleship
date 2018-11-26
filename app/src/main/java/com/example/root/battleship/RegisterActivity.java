@@ -23,8 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
                 EditText repasswordTxtField = (EditText) findViewById(R.id.repasswordRegisterField);
                 if (passwordTxtField.equals(repasswordTxtField)) {
                     DBConnection connection = new DBConnection();
-                    connection.openConnection();
-                    connection.insertUserData(usernameTxtField.toString(), passwordTxtField.toString());
+                    connection.insertNewUser(usernameTxtField.toString(), passwordTxtField.toString());
                     openGameMenuActivity();
                 }
                 break;
