@@ -1,8 +1,12 @@
 package com.example.root.battleship;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
@@ -24,9 +28,22 @@ public class RegisterActivity extends AppCompatActivity {
                 EditText passwordTxtField = (EditText) findViewById(R.id.passwordRegisterField);
                 EditText repasswordTxtField = (EditText) findViewById(R.id.repasswordRegisterField);
 
-                if (passwordTxtField.getText().toString().equals(repasswordTxtField.getText().toString())) {
+                //checking the username
+                if(usernameTxtField.getText().toString().length() <= 3) {
+                    System.out.println("The username can't be empty or smaller than 4 symbols!");
+                }else if(usernameTxtField.getText().toString().equals("rnd")) { 
+                    System.out.println("This username is already used!");
+                }
+                //checking the password
+                else if(passwordTxtField.getText().toString().equals("") | passwordTxtField.getText().toString().length() <= 3){
+                    System.out.println("The password can't be empty or smaller than 4 symbols!");
+                }else if(repasswordTxtField.getText().toString().equals("")  | repasswordTxtField.getText().toString().length() <= 3) {
+                    System.out.println("Please typ your password again!");
+                }else if(!passwordTxtField.getText().toString().equals(repasswordTxtField.getText().toString())) {
+                    System.out.println("The two passwords don't match!");
+                }else if(passwordTxtField.getText().toString().equals(repasswordTxtField.getText().toString())) {
                     DBConnection connection = new DBConnection();
-                    connection.insertNewUser(usernameTxtField.getText().toString(), passwordTxtField.getText().toString());
+                    connection.insertUserIntoDB(usernameTxtField.getText().toString(), passwordTxtField.getText().toString());
                     openGameMenuActivity();
                 }
                 break;
@@ -37,4 +54,5 @@ public class RegisterActivity extends AppCompatActivity {
         Intent gameMenuIntent = new Intent(this, MenuActivity.class);
         startActivity(gameMenuIntent);
     }
+
 }

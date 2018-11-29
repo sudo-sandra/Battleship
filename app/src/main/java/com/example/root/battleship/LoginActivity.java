@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
                 EditText passwordTxt = findViewById(R.id.passwordLoginField);
                 User user = new User(usernameTxt.getText().toString(), passwordTxt.getText().toString());
                 DBConnection connection = new DBConnection();
-                connection.selectUser(user);
+                connection.selectUserFromDB(user);
                 openGameMenuActivity();
                 break;
             case R.id.registerBtn:
