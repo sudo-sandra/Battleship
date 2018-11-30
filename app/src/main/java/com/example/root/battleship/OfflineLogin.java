@@ -1,12 +1,9 @@
 package com.example.root.battleship;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
 
 public class OfflineLogin extends AppCompatActivity {
@@ -21,13 +18,14 @@ public class OfflineLogin extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.start_button:
                 // TODO: sqlite database zeugs!!
-                openSetUpMap();
+                openGame();
                 break;
         }
     }
 
-    public void openSetUpMap() {
-        Intent menuIntent = new Intent(this, SetUpMap.class);
-        startActivity(menuIntent);
+    public void openGame() {
+        Intent gameIntent = new Intent(this, Game.class);
+        gameIntent.putExtra("play_mode", Game.OFFLINE_TWO_PLAYER);
+        startActivity(gameIntent);
     }
 }

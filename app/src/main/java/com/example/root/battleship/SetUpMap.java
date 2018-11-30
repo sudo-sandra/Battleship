@@ -1,5 +1,6 @@
 package com.example.root.battleship;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,7 +26,7 @@ public class SetUpMap extends AppCompatActivity implements View.OnClickListener{
         for (int i = 0; i < 10; i++) {
             ships[i] = new View(this);
             ships[i].setLayoutParams(layout_params);
-            ships[i].setBackgroundColor(Color.RED);
+            ships[i].setBackgroundColor(Color.rgb(127, 88, 54));
         }
         TableLayout legend = (TableLayout) findViewById(R.id.legendLayout);
         int count = 0;
@@ -47,7 +48,7 @@ public class SetUpMap extends AppCompatActivity implements View.OnClickListener{
 
     private void create_battle(){
         battle = new Battleship();
-        battleView = new BattleshipView(this,this, battle, (TableLayout) findViewById(R.id.map_layout), false);
+        battleView = new BattleshipView(this, battle, (TableLayout) findViewById(R.id.map_layout), false);
     }
 
     @Override
@@ -58,17 +59,16 @@ public class SetUpMap extends AppCompatActivity implements View.OnClickListener{
                 battleView.set_up_map(battle);
                 break;
             case R.id.ok_btn:
-                openGameActivity();
+                returnBattleToGame();
                 break;
         }
     }
 
-    private void openGameActivity() {
-        Intent gameIntent = new Intent(this, Game.class);
-//        Bundle extras = new Bundle();
-//        //TODO pass battle to Game
-//        extras.putIntArray("map", battle);
-        startActivity(gameIntent);
+    private void returnBattleToGame() {
+        Intent gameIntent = new Intent();
+        gameIntent.putExtra("battle", battle);
+        setResult(Activity.RESULT_OK, gameIntent);
+        finish();
     }
 
     public Battleship getBattle(){
