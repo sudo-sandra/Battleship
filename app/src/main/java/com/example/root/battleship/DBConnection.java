@@ -1,13 +1,11 @@
 package com.example.root.battleship;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -15,6 +13,7 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 public class DBConnection {
+    static boolean userStatus;
 
     //Reference on whole Database path="https://battleship-fs.firebaseio.com"
     private DatabaseReference dbRootRef = FirebaseDatabase.getInstance().getReference();
@@ -26,14 +25,19 @@ public class DBConnection {
         dbUserdataRef.push().setValue(user);
     }
 
-    public void selectUserFromDB(User user) {
-
+    public boolean selectUserFromDB(final User userUI) {
         dbUserdataRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<User> userList = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    User user = snapshot.getValue(User.class);
-                    System.out.println(user.getName()+ " Leer " + user.getPassword());
+                    User userDb = snapshot.getValue(User.class);
+                    userList.add(userDb);
+                    if(userDb.getName().equals(userUI.getName()) & userDb.getPassword().equals(userUI.getPassword())) {
+                        userStatus = true;
+                    } else {
+                        userStatus = false;
+                    }
                 }
             }
 
@@ -43,28 +47,6 @@ public class DBConnection {
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-
-        /*Query query = dbUserdataRef.orderByChild("name").equalTo(username);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                ArrayList<User> userList = new ArrayList<>();
-                for(DataSnapshot singleSnap : dataSnapshot.getChildren()) {
-                    //User user = new User(singleSnap.getValue(User.class));
-                    //System.out.print(user.getName() + " | " + user.getPassword() + "\n");
-                    //userList.add(user);
-                    System.out.println(singleSnap.child("password").getValue());
-                    System.out.println(singleSnap.child("name").getValue());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });*/
-
+        return userStatus;
     }
 }
