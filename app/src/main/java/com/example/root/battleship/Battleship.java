@@ -2,8 +2,9 @@ package com.example.root.battleship;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.io.Serializable;
 
-public class Battleship {
+public class Battleship implements Serializable{
     private Integer[][] map = new Integer[10][10];
     private int shipFields;
     private int destroyedShipFields = 0;
@@ -44,14 +45,14 @@ public class Battleship {
         if(isShip(y, x)){
             destroyedShipFields++;
             if(destroyedShipFields == shipFields){
-                System.out.println("You have won!!");
                 return 3;
             }
+            if(isDestroyed(y, x)){
+                return 2;
+            }
+            return 1;
         }
-        if(isDestroyed(y, x)){
-            return 2;
-        }
-        return 1;
+        return 0;
     }
 
     private boolean isDestroyed(int y, int x){
