@@ -1,11 +1,9 @@
 package com.example.root.battleship;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 
 public class OfflineMenu extends AppCompatActivity {
@@ -19,7 +17,7 @@ public class OfflineMenu extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.pc_button:
-                openSetUpMap();
+                openGame();
                 break;
             case R.id.two_player_button:
                 openOfflineLogin();
@@ -27,9 +25,10 @@ public class OfflineMenu extends AppCompatActivity {
         }
     }
 
-    public void openSetUpMap() {
-        Intent menuIntent = new Intent(this, SetUpMap.class);
-        startActivity(menuIntent);
+    public void openGame() {
+        Intent gameIntent = new Intent(this, Game.class);
+        gameIntent.putExtra("play_mode", Game.OFFLINE_ONE_PLAYER);
+        startActivity(gameIntent);
     }
 
     public void openOfflineLogin() {
