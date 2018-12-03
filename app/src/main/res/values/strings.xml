@@ -21,4 +21,11 @@
     <string name="set_up_title">Please set up your map</string>
     <string name="offlineMenuHeader">Select play mode</string>
     <string name="OfflineLoginHeader">Type in your names</string>
+
+    //Alerts
+    <string name="invalidUsernameLength">The username can\'t be empty or smaller than 4 symbols!</string>
+    <string name="usernameAlreadyUsed">This username has already been used!</string>
+    <string name="invalidPasswordLength">The password can\'t be empty or smaller than 4 symbols!</string>
+    <string name="missMatchOfPassword">The two passwords don\'t match!</string>
+    <string name="loginFailed">Your username or password might be wrong!</string>
 </resources>

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 public class DBConnection {
-    static boolean userStatus;
+    static boolean userExists;
 
     //Reference on whole Database path="https://battleship-fs.firebaseio.com"
     private DatabaseReference dbRootRef = FirebaseDatabase.getInstance().getReference();
@@ -33,11 +33,7 @@ public class DBConnection {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     User userDb = snapshot.getValue(User.class);
                     userList.add(userDb);
-                    if(userDb.getName().equals(userUI.getName()) & userDb.getPassword().equals(userUI.getPassword())) {
-                        userStatus = true;
-                    } else {
-                        userStatus = false;
-                    }
+                    userExists = userDb.getName().equals(userUI.getName()) & userDb.getPassword().equals(userUI.getPassword());
                 }
             }
 
@@ -47,6 +43,27 @@ public class DBConnection {
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-        return userStatus;
+        return userExists;
+    }
+
+    public boolean checkUsername(final String usernameUI) {
+        dbUserdataRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<User> userList = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    User userDb = snapshot.getValue(User.class);
+                    userList.add(userDb);
+                    userExists = userDb.getName().equals(usernameUI);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+        return userExists;
     }
 }

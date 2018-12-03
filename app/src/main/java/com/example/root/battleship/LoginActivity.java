@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -22,11 +23,13 @@ public class LoginActivity extends AppCompatActivity {
                 EditText passwordTxt = findViewById(R.id.passwordLoginField);
                 User user = new User(usernameTxt.getText().toString(), passwordTxt.getText().toString());
                 DBConnection connection = new DBConnection();
-                boolean userLogin = connection.selectUserFromDB(user);
-                if (userLogin == true) {
+                boolean userExists = connection.selectUserFromDB(user);
+                if (userExists) {
                     openGameMenuActivity();
+                }else {
+                    String msg = getString(R.string.loginFailed);
+                    Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
                 }
-                System.out.println("Login went wrong!");
                 break;
             case R.id.registerBtn:
                 openRegisterActivity();

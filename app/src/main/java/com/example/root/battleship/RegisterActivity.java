@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -28,21 +29,23 @@ public class RegisterActivity extends AppCompatActivity {
                 EditText passwordTxtField = (EditText) findViewById(R.id.passwordRegisterField);
                 EditText repasswordTxtField = (EditText) findViewById(R.id.repasswordRegisterField);
 
+                DBConnection connection = new DBConnection();
+                boolean userExists = connection.checkUsername(usernameTxtField.getText().toString());
+
                 //checking the username
-                if(usernameTxtField.getText().toString().length() <= 3) {
-                    System.out.println("The username can't be empty or smaller than 4 symbols!");
-                }else if(usernameTxtField.getText().toString().equals("rnd")) { 
-                    System.out.println("This username is already used!");
+                if(usernameTxtField.getText().toString().isEmpty() | usernameTxtField.getText().toString().length() <= 3) {
+                    openErrorMessage(getString(R.string.invalidUsernameLength));
+                }else if(userExists == true) {
+                    openErrorMessage(getString(R.string.usernameAlreadyUsed));
                 }
                 //checking the password
-                else if(passwordTxtField.getText().toString().equals("") | passwordTxtField.getText().toString().length() <= 3){
-                    System.out.println("The password can't be empty or smaller than 4 symbols!");
+                else if(passwordTxtField.getText().toString().isEmpty() | passwordTxtField.getText().toString().equals("") | passwordTxtField.getText().toString().length() <= 3){
+                    openErrorMessage(getString(R.string.invalidPasswordLength));
                 }else if(repasswordTxtField.getText().toString().equals("")  | repasswordTxtField.getText().toString().length() <= 3) {
-                    System.out.println("Please typ your password again!");
+                    openErrorMessage(getString(R.string.invalidPasswordLength));
                 }else if(!passwordTxtField.getText().toString().equals(repasswordTxtField.getText().toString())) {
-                    System.out.println("The two passwords don't match!");
+                    openErrorMessage(getString(R.string.missMatchOfPassword));
                 }else if(passwordTxtField.getText().toString().equals(repasswordTxtField.getText().toString())) {
-                    DBConnection connection = new DBConnection();
                     connection.insertUserIntoDB(usernameTxtField.getText().toString(), passwordTxtField.getText().toString());
                     openGameMenuActivity();
                 }
@@ -53,6 +56,10 @@ public class RegisterActivity extends AppCompatActivity {
     private void openGameMenuActivity() {
         Intent gameMenuIntent = new Intent(this, MenuActivity.class);
         startActivity(gameMenuIntent);
+    }
+
+    private void openErrorMessage(String msg) {
+        Toast.makeText(RegisterActivity.this, msg, Toast.LENGTH_LONG).show();
     }
 
 }
