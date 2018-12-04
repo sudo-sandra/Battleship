@@ -30,11 +30,6 @@ public class StartActivity extends AppCompatActivity {
         startActivity(loginIntent);
     }
 
-    //private void openGameMenuActivity() {
-    //    Intent gameMenuIntent = new Intent(this, MenuActivity.class);
-    //    startActivity(gameMenuIntent);
-    //}
-
     private void openOfflineMenu() {
         Intent gameMenuIntent = new Intent(this, OfflineMenu.class);
         startActivity(gameMenuIntent);

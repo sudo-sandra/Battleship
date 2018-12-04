@@ -1,16 +1,11 @@
 package com.example.root.battleship;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -18,37 +13,26 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
     }
 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.registerBtn:
 
-                EditText usernameTxtField = (EditText) findViewById(R.id.usernameRegisterField);
-                EditText passwordTxtField = (EditText) findViewById(R.id.passwordRegisterField);
-                EditText repasswordTxtField = (EditText) findViewById(R.id.repasswordRegisterField);
+                EditText usernameTxtField = findViewById(R.id.usernameRegisterField);
+                EditText passwordTxtField = findViewById(R.id.passwordRegisterField);
+                EditText repasswordTxtField = findViewById(R.id.repasswordRegisterField);
 
-                DBConnection connection = new DBConnection();
-                boolean userExists = connection.checkUsername(usernameTxtField.getText().toString());
+                String username = usernameTxtField.getText().toString();
+                String password = passwordTxtField.getText().toString();
+                String repassword = repasswordTxtField.getText().toString();
 
-                //checking the username
-                if(usernameTxtField.getText().toString().isEmpty() | usernameTxtField.getText().toString().length() <= 3) {
-                    openErrorMessage(getString(R.string.invalidUsernameLength));
-                }else if(userExists == true) {
-                    openErrorMessage(getString(R.string.usernameAlreadyUsed));
-                }
-                //checking the password
-                else if(passwordTxtField.getText().toString().isEmpty() | passwordTxtField.getText().toString().equals("") | passwordTxtField.getText().toString().length() <= 3){
-                    openErrorMessage(getString(R.string.invalidPasswordLength));
-                }else if(repasswordTxtField.getText().toString().equals("")  | repasswordTxtField.getText().toString().length() <= 3) {
-                    openErrorMessage(getString(R.string.invalidPasswordLength));
-                }else if(!passwordTxtField.getText().toString().equals(repasswordTxtField.getText().toString())) {
-                    openErrorMessage(getString(R.string.missMatchOfPassword));
-                }else if(passwordTxtField.getText().toString().equals(repasswordTxtField.getText().toString())) {
-                    connection.insertUserIntoDB(usernameTxtField.getText().toString(), passwordTxtField.getText().toString());
+                //Checking Validity of Username and Password, if true insert User into Database and forward User to Game Menu
+                if(checkingUsernameOnValidity(DBConnection.getInstance(), username) & checkingPasswordOnValidity(password, repassword)) {
+                    DBConnection.getInstance().insertUserIntoDB(username, password);
                     openGameMenuActivity();
                 }
+
                 break;
         }
     }
@@ -60,6 +44,37 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void openErrorMessage(String msg) {
         Toast.makeText(RegisterActivity.this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    private boolean checkingUsernameOnValidity(DBConnection connection, String username) {
+        boolean userExists = connection.checkUsername(username), validUser;
+        if (username.isEmpty() | username.equals("") | username.length() <= 3) {
+            openErrorMessage(getString(R.string.invalidUsernameLength));
+            validUser = false;
+        } else if (userExists) {
+            openErrorMessage(getString(R.string.usernameAlreadyUsed));
+            validUser = false;
+        } else {
+            validUser = true;
+        }
+        return validUser;
+    }
+
+    private boolean checkingPasswordOnValidity(String password, String repassword) {
+        boolean validPassword = false;
+        if (password.isEmpty() | password.equals("") | password.length() <= 3) {
+            openErrorMessage(getString(R.string.invalidPasswordLength));
+            validPassword = false;
+        }else if(repassword.isEmpty() | repassword.equals("")  | repassword.length() <= 3) {
+            openErrorMessage(getString(R.string.invalidPasswordLength));
+            validPassword = false;
+        }else if(!password.equals(repassword)) {
+            openErrorMessage(getString(R.string.missMatchOfPassword));
+            validPassword = false;
+        }else if(password.equals(repassword)) {
+            validPassword = true;
+        }
+        return validPassword;
     }
 
 }
