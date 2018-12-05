@@ -2,6 +2,7 @@ package com.example.root.battleship;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,61 +29,61 @@ public class DBConnection {
     //Reference on whole Database path="https://battleship-fs.firebaseio.com"
     private DatabaseReference dbRootRef = FirebaseDatabase.getInstance().getReference();
     //Reference to "Table" userdata path="https://battleship-fs.firebaseio.com/userdata"
-    private DatabaseReference dbUserdataRef = dbRootRef.child("userdata");
+    protected DatabaseReference dbUserdataRef = dbRootRef.child("userdata");
 
     //Inserting User into Database - used in RegisterActivity
-    protected void insertUserIntoDB(String username, String password) {
-        User user = new User(username, password);
-        dbUserdataRef.push().setValue(user);
+    protected void insertUserIntoDB(User user) {
+        if(user != null) {
+            dbUserdataRef.child(user.getName()).setValue(user);
+        }
     }
 
-    //Making sure that user exists in Database - used in LoginActivity
-    protected boolean selectUserFromDB(final User userUI) {
-        dbUserdataRef.addValueEventListener(new ValueEventListener() {
+    protected boolean signIn(final User user) {
+        DBConnection.getInstance().dbUserdataRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<User> userList = new ArrayList<>();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    User userDb = snapshot.getValue(User.class);
-                    userList.add(userDb);
-                    for (User user : userList) {
-                        if (user.getName().equals(userUI.getName()) && user.getPassword().equals(userUI.getPassword())){
+                if(dataSnapshot.child(user.getName()).exists()) {
+                    if(!user.getName().isEmpty()) {
+                        User login = dataSnapshot.child(user.getName()).getValue(User.class);
+                        if(login.getPassword().equals(user.getPassword())) {
                             userExists = true;
                         }
+                        else {
+                            userExists = false;
+                        }
+                    }
+                    else {
+                        userExists = false;
                     }
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "Failed to read value.", databaseError.toException());
             }
         });
         return userExists;
     }
 
-    //Making sure that username can't be used twice - used in RegisterActivity
-    public boolean checkUsername(final String usernameUI) {
-        dbUserdataRef.addValueEventListener(new ValueEventListener() {
+    protected boolean comparingUserUiWithUserDatabase(final User userUI) {
+        dbUserdataRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<User> userList = new ArrayList<>();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    User userDb = snapshot.getValue(User.class);
-                    userList.add(userDb);
-                    if (userDb != null) {
-                        userExists = userDb.getName().equals(usernameUI);
-                    }
+                if(dataSnapshot.child(userUI.getName()).exists()) {
+                    userExists = true;
+                } else {
+                    insertUserIntoDB(userUI);
+                    userExists = false;
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
         return userExists;
     }
+
 }
