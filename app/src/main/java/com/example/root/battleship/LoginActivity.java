@@ -19,21 +19,22 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
     }
 
     public void onClick(View view) {
-
         switch (view.getId()) {
             case R.id.loginBtn:
                 User user = readInputFields();
                 boolean userExists = DBConnection.getInstance().signIn(user);
+                //TODO: fixing needed double click for Login
                 if (userExists) {
                     Toast.makeText(LoginActivity.this, "Login was successful", Toast.LENGTH_SHORT).show();
                     openGameMenuActivity();
-                } else {
+                }
+                else {
                     Toast.makeText(LoginActivity.this, "Please check our username and password", Toast.LENGTH_SHORT).show();
                 }
+
                 break;
             case R.id.registerBtn:
                 openRegisterActivity();
@@ -57,6 +58,5 @@ public class LoginActivity extends AppCompatActivity {
         User user = new User(usernameTxt.getText().toString(), passwordTxt.getText().toString());
         return user;
     }
-
 
 }
