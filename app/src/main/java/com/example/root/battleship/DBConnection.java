@@ -39,30 +39,29 @@ public class DBConnection {
     }
 
     protected boolean signIn(final User user) {
-        DBConnection.getInstance().dbUserdataRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child(user.getName()).exists()) {
-                    if(!user.getName().isEmpty()) {
-                        User login = dataSnapshot.child(user.getName()).getValue(User.class);
-                        if(login.getPassword().equals(user.getPassword())) {
-                            userExists = true;
-                        }
-                        else {
+            dbUserdataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child(user.getName()).exists()) {
+                        if (!user.getName().isEmpty()) {
+                            User login = dataSnapshot.child(user.getName()).getValue(User.class);
+                            if (login.getPassword().equals(user.getPassword())) {
+                                userExists = true;
+
+                            } else {
+                                userExists = false;
+                            }
+                        } else {
                             userExists = false;
                         }
                     }
-                    else {
-                        userExists = false;
-                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.w(TAG, "Failed to read value.", databaseError.toException());
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.w(TAG, "Failed to read value.", databaseError.toException());
+                }
+            });
         return userExists;
     }
 
@@ -80,10 +79,9 @@ public class DBConnection {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.w(TAG, "Failed to read value.", databaseError.toException());
             }
         });
         return userExists;
     }
-
 }

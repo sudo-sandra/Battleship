@@ -27,11 +27,11 @@ public class RegisterActivity extends AppCompatActivity {
 
                 User user = readInputFields();
                 //Checking Validity of Username and Password, if true insert User into Database and forward User to Game Menu
+                //TODO: fixing possible register even if user exists but at second click it doesn't work
                 if(checkingUsernameOnValidity(user)) {
                     DBConnection.getInstance().insertUserIntoDB(user);
                     openGameMenuActivity();
                 }
-
                 break;
         }
     }
@@ -61,10 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean checkingPasswordOnValidity(String password, String repassword) {
         boolean validPassword = false;
-        if (password.isEmpty() | password.equals("") | password.length() <= 3) {
-            openErrorMessage(getString(R.string.invalidPasswordLength));
-            validPassword = false;
-        }else if(repassword.isEmpty() | repassword.equals("")  | repassword.length() <= 3) {
+        if (password.isEmpty() | password.length() <= 3) {
             openErrorMessage(getString(R.string.invalidPasswordLength));
             validPassword = false;
         }else if(!password.equals(repassword)) {
@@ -88,8 +85,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         if(checkingPasswordOnValidity(password, repassword)) {
             user = new User(username, password);
-        } else {
-            Toast.makeText(RegisterActivity.this, "Please check that your passwords are the same", Toast.LENGTH_SHORT).show();
         }
         return user;
     }
