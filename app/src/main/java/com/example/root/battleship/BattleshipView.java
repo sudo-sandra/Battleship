@@ -41,7 +41,7 @@ public class BattleshipView{
 
     private void create_map(){
         //TODO: scale to right size not 50
-        TableRow.LayoutParams layout_params = new TableRow.LayoutParams(50, 50);
+        TableRow.LayoutParams layout_params = new TableRow.LayoutParams(40, 40);
         layout_params.setMargins(5,5,5,5);
         for(int i = 0; i < 10; i++) {
             rows[i] = new TableRow(context);
@@ -137,14 +137,40 @@ public class BattleshipView{
             view_map[y_id][x_id].setBackgroundColor(Color.rgb(136, 175, 226));
         }
         else if (map[y_id][x_id] == 1) {
-            view_map[y_id][x_id].setBackgroundColor(Color.rgb(127, 88, 54));
+            view_map[y_id][x_id].setBackgroundColor(Color.rgb(255, 175, 84));
         }
     }
 
-    public void enable_all(){
+    public void set_hit_colors(Battleship battle){
+        this.battle = battle;
+        Integer[][] map = battle.get_map();
         for(int i = 0; i < 10; i++){
             for(int k = 0; k < 10; k++){
-                view_map[i][k].setEnabled(true);
+                if (map[i][k] == 2) {
+                    view_map[i][k].setEnabled(false);
+                    view_map[i][k].setBackgroundColor(Color.BLUE);
+                }
+                else if (map[i][k] == 3) {
+                    view_map[i][k].setEnabled(false);
+                    if(battle.isDestroyed(i, k)){
+                        view_map[i][k].setBackgroundColor(Color.rgb(0, 200, 0));
+                    }
+                    else{
+                        view_map[i][k].setBackgroundColor(Color.RED);
+                    }
+                }
+            }
+        }
+
+    }
+
+    public void enable_all(){
+        Integer[][] map = battle.get_map();
+        for(int i = 0; i < 10; i++){
+            for(int k = 0; k < 10; k++){
+                if(map[i][k] < 2){
+                    view_map[i][k].setEnabled(true);
+                }
             }
         }
     }

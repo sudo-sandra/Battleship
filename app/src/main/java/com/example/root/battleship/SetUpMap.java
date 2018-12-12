@@ -20,20 +20,20 @@ public class SetUpMap extends AppCompatActivity implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.set_up_map);
-        TableRow.LayoutParams layout_params = new TableRow.LayoutParams(55, 55);
+        TableRow.LayoutParams layout_params = new TableRow.LayoutParams(40, 40);
         layout_params.setMargins(5,5,5,5);
         View[] ships = new View[10];
         for (int i = 0; i < 10; i++) {
             ships[i] = new View(this);
             ships[i].setLayoutParams(layout_params);
-            ships[i].setBackgroundColor(Color.rgb(127, 88, 54));
+            ships[i].setBackgroundColor(Color.rgb(255, 175, 84));
         }
         TableLayout legend = (TableLayout) findViewById(R.id.legendLayout);
         int count = 0;
         for(int i = 0; i < 4 ; i++){
             TableRow row = (TableRow) legend.getChildAt(i);
             TextView txt = (TextView) row.getChildAt(0);
-            txt.setTextSize(28);
+            txt.setTextSize(20);
             for(int k = Math.abs(i - 4); k > 0; k--){
                 row.addView(ships[count]);
                 count++;
