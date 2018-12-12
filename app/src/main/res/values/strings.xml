@@ -12,6 +12,7 @@
     <string name="pcBtn">PC</string>
     <string name="twoPlayerBtn">2 Player</string>
     <string name="startBtn">Start</string>
+    <string name="backBtn">Back</string>
 
     //Textfield
     <string name="usernameTxtField">Username</string>
@@ -21,6 +22,8 @@
     <string name="set_up_title">Please set up your map</string>
     <string name="offlineMenuHeader">Select play mode</string>
     <string name="OfflineLoginHeader">Type in your names</string>
+    <string name="wins_txt">WINS :</string>
+    <string name="loses_txt">LOSES :</string>
 
     //Alerts
     <string name="invalidUsernameLength">The username can\'t be empty or smaller than 4 symbols!</string>

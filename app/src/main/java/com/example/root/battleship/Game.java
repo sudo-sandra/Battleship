@@ -32,7 +32,10 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
 
         Intent intent = getIntent();
         play_mode = intent.getStringExtra("play_mode");
+        turn_text = (TextView)findViewById(R.id.turn_text);
         if(play_mode.equals(OFFLINE_TWO_PLAYER)){
+            // TODO player_name
+            turn_text.setText("player one");
             //TODO set name to know who
             getBattleFromSetUp();
         }
@@ -43,65 +46,85 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
             // enemy is second player
             getBattleFromSetUp();
         }
-        turn_text = (TextView)findViewById(R.id.turn_text);
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
-                if(active_player == 1){
-                    enemyBattle = (Battleship) data.getSerializableExtra("battle");
-                    if(play_mode.equals(OFFLINE_TWO_PLAYER)){
-                        active_player = 2;
-                        getBattleFromSetUp();
-                        return;
-                    }
-                }
-                else if(active_player == 2){
-                    Intent intent = getIntent();
-                    battle = (Battleship) intent.getSerializableExtra("battle");
-                }
-                //TODO differ between modes
-                //TODO Database stuff
-                set_up_map();
-                battleView.setBattleshipViewListener(new BattleshipView.BattleshipViewListener(){
-                    @Override
-                    public void onFieldDestroyed(int destroyStatus) {
-                        // TODO: write new map to database
-                        // case 1 and 2 -> destroyed ship -> you're turn again
-                        switch (destroyStatus){
-                            case 3:
-                                battleView.disable_all();
-                                turn_text.setText("You have won!");
-                                enemyView.show_full_map();
-                                break;
-                            case 0:
-                                battleView.disable_all();
-                                if(play_mode.equals(OFFLINE_ONE_PLAYER)){
-                                    turn_text.setText("PC turn");
-                                }
-                                enemyTurn();
-                                break;
-                        }
-                    }
-                });
-                // play_against_pc();
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
+        if (resultCode == Activity.RESULT_CANCELED) {
+            return;
+        }
+        switch (requestCode){
+            case 1:
+                setUpResult(data);
+                break;
+            case 2:
+                battleView.set_hit_colors(battle);
+                enemyView.set_hit_colors(enemyBattle);
+                break;
+            case 3:
+                getPlayerTwoBattle();
+                break;
+            case 4:
+                enemyBattle = (Battleship) data.getSerializableExtra("battle");
+                getPlayerOneConfirmation();
+                break;
+        }
+    }
+
+    private void setUpResult(Intent data){
+        if(active_player == 1){
+            enemyBattle = (Battleship) data.getSerializableExtra("battle");
+            if(play_mode.equals(OFFLINE_TWO_PLAYER)){
+                active_player = 2;
+                getBattleFromSetUp();
                 return;
             }
         }
+        else if(active_player == 2){
+            battle = (Battleship) data.getSerializableExtra("battle");
+        }
+        //TODO differ between modes
+        //TODO Database stuff
+        set_up_map();
+        battleView.setBattleshipViewListener(new BattleshipView.BattleshipViewListener(){
+            @Override
+            public void onFieldDestroyed(int destroyStatus) {
+                // TODO: write new map to database
+                // case 1 and 2 -> destroyed ship -> you're turn again
+                switch (destroyStatus){
+                    case 3:
+                        battleView.disable_all();
+                        turn_text.setText("You have won!");
+                        openTwoPlayerResult();
+                        enemyView.show_full_map();
+                        break;
+                    case 0:
+                        battleView.disable_all();
+                        if(play_mode.equals(OFFLINE_ONE_PLAYER)){
+                            turn_text.setText("PC turn");
+                        }
+                        enemyTurn();
+                        break;
+                }
+            }
+        });
+        // play_against_pc();
     }
 
     private void enemyTurn(){
         if(play_mode.equals(OFFLINE_ONE_PLAYER)){
             play_against_pc();
         }
-        turn_text.setText("Your turn");
+        else if(play_mode.equals(OFFLINE_TWO_PLAYER)){
+            play_against_human();
+        }
         battleView.enable_all();
 
+    }
+
+    private void play_against_human(){
+        // TODO: replace Player Names
+        getPlayerTwoConfirmation();
     }
 
     private void play_against_pc(){
@@ -123,6 +146,7 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
                 turn_text.setText("You have lost!");
                 break;
             case 0:
+                turn_text.setText("Your turn");
                 break;
             default:
                 play_against_pc();
@@ -132,6 +156,8 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
     }
 
     private void set_up_map(){
+        battle.print_map();
+        enemyBattle.print_map();
         battleView = new BattleshipView(this, battle, (TableLayout)
                 findViewById(R.id.map_layout));
         enemyView = new BattleshipView(this, enemyBattle,
@@ -151,5 +177,35 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
     public void getBattleFromSetUp() {
         Intent setUpIntent = new Intent(this, SetUpMap.class);
         startActivityForResult(setUpIntent, 1);
+    }
+
+    public void getPlayerOneConfirmation(){
+        Intent turnIntent = new Intent(this, TurnDisplay.class);
+        // TODO: Player name
+        turnIntent.putExtra("turn_text", "Player One");
+        startActivityForResult(turnIntent, 2);
+    }
+
+    public void getPlayerTwoConfirmation(){
+        Intent turnIntent = new Intent(this, TurnDisplay.class);
+        // TODO: Player name
+        turnIntent.putExtra("turn_text", "Player Two");
+        startActivityForResult(turnIntent, 3);
+    }
+
+    public void getPlayerTwoBattle(){
+        Intent player_two_intent = new Intent(this, PlayerTwoGame.class);
+        // TODO: player name
+        player_two_intent.putExtra("player_name", "Player Two");
+        player_two_intent.putExtra("battle", enemyBattle);
+        player_two_intent.putExtra("enemy_battle", battle);
+        startActivityForResult(player_two_intent, 4);
+    }
+
+    public void openTwoPlayerResult(){
+        Intent resultIntent = new Intent(this, Result.class);
+        // TODO: player name
+        resultIntent.putExtra("winner", "Player One");
+        startActivity(resultIntent);
     }
 }

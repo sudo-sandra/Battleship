@@ -32,7 +32,11 @@ public class OfflineMenu extends AppCompatActivity {
     }
 
     public void openOfflineLogin() {
-        Intent registerIntent = new Intent(this, OfflineLogin.class);
-        startActivity(registerIntent);
+        // TODO offline login
+//        Intent registerIntent = new Intent(this, OfflineLogin.class);
+//        startActivity(registerIntent);
+        Intent gameIntent = new Intent(this, Game.class);
+        gameIntent.putExtra("play_mode", Game.OFFLINE_TWO_PLAYER);
+        startActivity(gameIntent);
     }
 }

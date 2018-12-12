@@ -29,13 +29,17 @@
             android:screenOrientation="landscape" />
         <activity android:name=".Game"
             android:screenOrientation="landscape" />
-        <activity android:name=".BattleshipView"
-            android:screenOrientation="landscape" />
         <activity android:name=".SetUpMap"
             android:screenOrientation="landscape" />
         <activity android:name=".OfflineMenu"
             android:screenOrientation="landscape" />
         <activity android:name=".OfflineLogin"
+            android:screenOrientation="landscape" />
+        <activity android:name=".TurnDisplay"
+            android:screenOrientation="landscape" />
+        <activity android:name=".PlayerTwoGame"
+            android:screenOrientation="landscape" />
+        <activity android:name=".Result"
             android:screenOrientation="landscape" />
     </application>
 

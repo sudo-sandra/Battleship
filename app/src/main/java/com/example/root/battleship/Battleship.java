@@ -55,7 +55,7 @@ public class Battleship implements Serializable{
         return 0;
     }
 
-    private boolean isDestroyed(int y, int x){
+    public boolean isDestroyed(int y, int x){
         Integer[][] ship = getShip(y, x);
         for(int i = 0; i < ship.length; i++){
             if(ship[i][0] == -1){
