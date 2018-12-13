@@ -40,6 +40,24 @@ public class Battleship implements Serializable{
         return map;
     }
 
+    public String get_mapString() {
+        String mapString = "";
+        for(int i=0; i <10; i++) {
+            for(int k=0; k<10; k++) {
+                mapString+=map[i][k].toString();
+            }
+        }
+        return mapString;
+    }
+
+    public void set_mapString(String mapString) {
+        for(int i=0; i <10; i++) {
+            for(int k=0; k<10; k++) {
+                map[i][k] = Integer.parseInt(mapString.substring(i*10+k, i*10+k+1));
+            }
+        }
+    }
+
     public int destroyField(int y, int x){
         map[y][x] += 2;
         if(isShip(y, x)){
