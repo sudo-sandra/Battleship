@@ -25,15 +25,24 @@ public class LoginActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.loginBtn:
                 User user = readInputFields();
-                boolean userExists = DBConnection.getInstance().signIn(user);
-                //TODO: fixing needed double click for Login
-                if (userExists) {
-                    Toast.makeText(LoginActivity.this, "Login was successful", Toast.LENGTH_SHORT).show();
-                    openGameMenuActivity();
-                }
-                else {
-                    Toast.makeText(LoginActivity.this, "Please check our username and password", Toast.LENGTH_SHORT).show();
-                }
+                DBConnection.getInstance().signIn(user);
+                Toast.makeText(LoginActivity.this, "Loading...", Toast.LENGTH_LONG).show();
+                DBConnection.getInstance().setDBConnectionListener(new DBConnection.DBConnectionListener() {
+                    @Override
+                    public void userExists(boolean userExists) {
+                        if (userExists) {
+                            Toast.makeText(LoginActivity.this, "Login was successful", Toast.LENGTH_SHORT).show();
+                            openGameMenuActivity();
+                        }
+                        else {Toast.makeText(LoginActivity.this, "Please check your username and password!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void gameStarted(){}
+
+                    @Override
+                    public void getMap(String map){}
+                });
 
                 break;
             case R.id.registerBtn:

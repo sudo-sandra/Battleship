@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 public class RegisterActivity extends AppCompatActivity {
+    static boolean validUser, validPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +27,26 @@ public class RegisterActivity extends AppCompatActivity {
             case R.id.registerBtn:
 
                 User user = readInputFields();
-                //Checking Validity of Username and Password, if true insert User into Database and forward User to Game Menu
-                //TODO: fixing possible register even if user exists but at second click it doesn't work
-                if(checkingUsernameOnValidity(user)) {
-                    DBConnection.getInstance().insertUserIntoDB(user);
-                    openGameMenuActivity();
+                if(!validUser) {
+                    break;
+                } else {
+                    DBConnection.getInstance().comparingUserUiWithUserDatabase(user);
+                    Toast.makeText(RegisterActivity.this, "Loading...", Toast.LENGTH_LONG).show();
+                    DBConnection.getInstance().setDBConnectionListener(new DBConnection.DBConnectionListener() {
+                        @Override
+                        public void userExists(boolean userExists) {
+                            if (userExists) {
+                                Toast.makeText(RegisterActivity.this, "Please change your username", Toast.LENGTH_LONG).show();
+                            } else {
+                                openGameMenuActivity();
+                            }
+                        }
+                        @Override
+                        public void gameStarted(){}
+
+                        @Override
+                        public void getMap(String map){}
+                    });
                 }
                 break;
         }
@@ -46,12 +62,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean checkingUsernameOnValidity(User user) {
-        boolean validUser;
         if (user.getName().isEmpty() | user.getName().equals("") | user.getName().length() <= 3) {
             openErrorMessage(getString(R.string.invalidUsernameLength));
-            validUser = false;
-        } else if (DBConnection.getInstance().comparingUserUiWithUserDatabase(user)) {
-            openErrorMessage(getString(R.string.usernameAlreadyUsed));
             validUser = false;
         } else {
             validUser = true;
@@ -60,7 +72,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean checkingPasswordOnValidity(String password, String repassword) {
-        boolean validPassword = false;
         if (password.isEmpty() | password.length() <= 3) {
             openErrorMessage(getString(R.string.invalidPasswordLength));
             validPassword = false;
@@ -81,11 +92,10 @@ public class RegisterActivity extends AppCompatActivity {
         String username = usernameTxtField.getText().toString();
         String password = passwordTxtField.getText().toString();
         String repassword = repasswordTxtField.getText().toString();
-        User user = new User();
+        User user = new User(username, password);
 
-        if(checkingPasswordOnValidity(password, repassword)) {
-            user = new User(username, password);
-        }
+        checkingUsernameOnValidity(user);
+        checkingPasswordOnValidity(password, repassword);
         return user;
     }
 }
