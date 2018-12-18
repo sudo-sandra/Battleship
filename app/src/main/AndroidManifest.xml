@@ -41,6 +41,8 @@
             android:screenOrientation="landscape" />
         <activity android:name=".Result"
             android:screenOrientation="landscape" />
+        <activity android:name=".Waiting"
+            android:screenOrientation="landscape" />
     </application>
 
 

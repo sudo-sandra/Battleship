@@ -46,6 +46,9 @@ public class RegisterActivity extends AppCompatActivity {
 
                         @Override
                         public void getMap(String map){}
+
+                        @Override
+                        public void active(){}
                     });
                 }
                 break;

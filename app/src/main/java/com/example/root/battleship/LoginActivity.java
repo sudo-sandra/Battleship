@@ -42,6 +42,9 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void getMap(String map){}
+
+                    @Override
+                    public void active(){}
                 });
 
                 break;
@@ -52,8 +55,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void openGameMenuActivity() {
-        Intent menuIntent = new Intent(this, MenuActivity.class);
-        startActivity(menuIntent);
+//        Intent menuIntent = new Intent(this, MenuActivity.class);
+//        startActivity(menuIntent);
+        Intent gameIntent = new Intent(this, Game.class);
+        gameIntent.putExtra("play_mode", Game.ONLINE_TWO_PLAYER);
+        EditText usernameTxt = findViewById(R.id.usernameLoginField);
+        gameIntent.putExtra("user_name", usernameTxt.getText().toString());
+        startActivity(gameIntent);
     }
 
     private void openRegisterActivity() {
