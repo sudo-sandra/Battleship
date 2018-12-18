@@ -24,6 +24,7 @@
     <string name="OfflineLoginHeader">Type in your names</string>
     <string name="wins_txt">WINS :</string>
     <string name="loses_txt">LOSES :</string>
+    <string name="waiting">Waiting...</string>
 
     //Alerts
     <string name="invalidUsernameLength">The username can\'t be empty or smaller than 4 symbols!</string>

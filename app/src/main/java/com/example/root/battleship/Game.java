@@ -23,6 +23,7 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
     BattleshipView battleView;
     BattleshipView enemyView;
     String play_mode;
+    String user_name;
     int active_player = 1;
 
     @Override
@@ -42,6 +43,14 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
         else{
             if(play_mode.equals(OFFLINE_ONE_PLAYER)) {
                 battle = new Battleship();
+            }
+            else if(play_mode.equals(ONLINE_TWO_PLAYER)){
+                user_name = intent.getStringExtra("user_name");
+                // TODO Database connection
+                // if no open game open game
+                // while game not closed wait
+                // else if open game join game and close game
+                // set database battle on player two
             }
             // enemy is second player
             getBattleFromSetUp();
@@ -68,6 +77,11 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
                 enemyBattle = (Battleship) data.getSerializableExtra("battle");
                 getPlayerOneConfirmation();
                 break;
+            case 5:
+                battle = new Battleship();
+                battle.set_mapString(data.getStringExtra("map"));
+                set_up_map();
+                break;
         }
     }
 
@@ -83,48 +97,77 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
         else if(active_player == 2){
             battle = (Battleship) data.getSerializableExtra("battle");
         }
-        //TODO differ between modes
-        //TODO Database stuff
-        set_up_map();
-        battleView.setBattleshipViewListener(new BattleshipView.BattleshipViewListener(){
-            @Override
-            public void onFieldDestroyed(int destroyStatus) {
-                // TODO: write new map to database
-                // case 1 and 2 -> destroyed ship -> you're turn again
-                switch (destroyStatus){
-                    case 3:
-                        battleView.disable_all();
-                        turn_text.setText("You have won!");
-                        openTwoPlayerResult();
-                        enemyView.show_full_map();
-                        break;
-                    case 0:
-                        battleView.disable_all();
-                        if(play_mode.equals(OFFLINE_ONE_PLAYER)){
-                            turn_text.setText("PC turn");
-                        }
-                        enemyTurn();
-                        break;
+        if(play_mode.equals(ONLINE_TWO_PLAYER)){
+            DBConnection.getInstance().setGamedata(enemyBattle.get_mapString());
+            DBConnection.getInstance().getNewMapdata();
+            DBConnection.getInstance().setDBConnectionListener(new DBConnection.DBConnectionListener() {
+                @Override
+                public void userExists(boolean userExists) {}
+
+                @Override
+                public void getMap(String map) {
+                    battle = new Battleship();
+                    battle.set_mapString(map);
+                    set_up_map();
                 }
-            }
-        });
-        // play_against_pc();
+
+                @Override
+                public void gameStarted() {
+                    getEnemy();
+                }
+
+                @Override
+                public void active(){}
+            });
+            return;
+        }
+        set_up_map();
     }
 
     private void enemyTurn(){
         if(play_mode.equals(OFFLINE_ONE_PLAYER)){
             play_against_pc();
+            battleView.enable_all();
         }
         else if(play_mode.equals(OFFLINE_TWO_PLAYER)){
             play_against_human();
+            battleView.enable_all();
         }
-        battleView.enable_all();
+        else if (play_mode.equals(ONLINE_TWO_PLAYER)){
+            play_against_human_online();
+        }
 
     }
 
     private void play_against_human(){
         // TODO: replace Player Names
         getPlayerTwoConfirmation();
+    }
+
+    private void play_against_human_online(){
+        DBConnection.getInstance().setEnemyActive();
+        DBConnection.getInstance().getNewMapdata();
+        DBConnection.getInstance().getActiveInfo();
+        DBConnection.getInstance().setDBConnectionListener(new DBConnection.DBConnectionListener() {
+            @Override
+            public void userExists(boolean userExists) {}
+
+            @Override
+            public void getMap(String map) {
+                enemyBattle.set_mapString(map);
+                enemyView.set_hit_colors(enemyBattle);
+            }
+
+            @Override
+            public void gameStarted() {}
+
+            @Override
+            public void active(){
+                System.out.println("active");
+                turn_text.setText("Your turn");
+                battleView.enable_all();
+            }
+        });
     }
 
     private void play_against_pc(){
@@ -156,12 +199,38 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
     }
 
     private void set_up_map(){
-        battle.print_map();
-        enemyBattle.print_map();
         battleView = new BattleshipView(this, battle, (TableLayout)
                 findViewById(R.id.map_layout));
         enemyView = new BattleshipView(this, enemyBattle,
                 (TableLayout) findViewById(R.id.own_map_layout), false);
+        battleView.setBattleshipViewListener(new BattleshipView.BattleshipViewListener(){
+            @Override
+            public void onFieldDestroyed(int destroyStatus) {
+                if(play_mode.equals(ONLINE_TWO_PLAYER)){
+                    DBConnection.getInstance().insertMapdata(battleView.getBattle().get_mapString());
+                }
+                // case 1 and 2 -> destroyed ship -> you're turn again
+                switch (destroyStatus){
+                    case 3:
+                        battleView.disable_all();
+                        turn_text.setText("You have won!");
+                        openTwoPlayerResult();
+                        enemyView.show_full_map();
+                        break;
+                    case 0:
+                        battleView.disable_all();
+                        if(play_mode.equals(OFFLINE_ONE_PLAYER)){
+                            turn_text.setText("PC turn");
+                        }
+                        else if(play_mode.equals(ONLINE_TWO_PLAYER)){
+                            turn_text.setText("Enemy turn");
+                            // TODO read enemy name from database and set name
+                        }
+                        enemyTurn();
+                        break;
+                }
+            }
+        });
     }
 
     @Override
@@ -207,5 +276,13 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
         // TODO: player name
         resultIntent.putExtra("winner", "Player One");
         startActivity(resultIntent);
+    }
+
+    public void getEnemy(){
+        if(battle != null){
+            return;
+        }
+        Intent waitingIntent = new Intent(this, Waiting.class);
+        startActivityForResult(waitingIntent, 5);
     }
 }
