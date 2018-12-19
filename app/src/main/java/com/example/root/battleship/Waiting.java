@@ -26,14 +26,16 @@ public class Waiting extends AppCompatActivity {
             }
 
             @Override
-            public void gameStarted() {
-                System.out.println("gameStarted");
-            }
+            public void gameStarted(String playerInfo) {}
 
             @Override
-            public void active(){
-                System.out.println("HAHAH active");
-            }
+            public void active(){}
+
+            @Override
+            public  void winnerResult(){}
+
+            @Override
+            public void getEnemyName(String name){}
         });
     }
 }

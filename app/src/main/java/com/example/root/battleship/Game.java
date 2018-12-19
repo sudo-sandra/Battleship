@@ -4,14 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import java.util.Random;
 
 
-public class Game extends AppCompatActivity implements View.OnClickListener{
+public class Game extends AppCompatActivity{
 
     static final String OFFLINE_ONE_PLAYER = "offline_one_player";
     static final String OFFLINE_TWO_PLAYER = "offline_two_player";
@@ -23,8 +22,10 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
     BattleshipView battleView;
     BattleshipView enemyView;
     String play_mode;
-    String user_name;
+    String user_name = "You";
+    String enemy_name = "Enemy";
     int active_player = 1;
+    String playerInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +47,16 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
             }
             else if(play_mode.equals(ONLINE_TWO_PLAYER)){
                 user_name = intent.getStringExtra("user_name");
-                // TODO Database connection
-                // if no open game open game
-                // while game not closed wait
-                // else if open game join game and close game
-                // set database battle on player two
             }
             // enemy is second player
             getBattleFromSetUp();
         }
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        DBConnection.getInstance().endGame();
     }
 
     @Override
@@ -106,18 +108,57 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
 
                 @Override
                 public void getMap(String map) {
+                    DBConnection.getInstance().getEnemyName();
+                    DBConnection.getInstance().setDBConnectionListener(new DBConnection.DBConnectionListener() {
+                        @Override
+                        public void userExists(boolean userExists) {
+
+                        }
+
+                        @Override
+                        public void getMap(String map) {
+
+                        }
+
+                        @Override
+                        public void gameStarted(String playerInfo) {
+
+                        }
+
+                        @Override
+                        public void active() {
+
+                        }
+
+                        @Override
+                        public void getEnemyName(String name) {
+                            enemy_name = name;
+                        }
+
+                        @Override
+                        public void winnerResult() {
+
+                        }
+                    });
                     battle = new Battleship();
                     battle.set_mapString(map);
                     set_up_map();
                 }
 
                 @Override
-                public void gameStarted() {
-                    getEnemy();
+                public void gameStarted(String playerInfoStr) {
+                    playerInfo = playerInfoStr;
+                    waitForEnemy();
                 }
 
                 @Override
                 public void active(){}
+
+                @Override
+                public  void winnerResult(){}
+
+                @Override
+                public void getEnemyName(String name){}
             });
             return;
         }
@@ -159,14 +200,21 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
             }
 
             @Override
-            public void gameStarted() {}
+            public void gameStarted(String playerInfo) {}
 
             @Override
             public void active(){
-                System.out.println("active");
                 turn_text.setText("Your turn");
                 battleView.enable_all();
             }
+
+            @Override
+            public  void winnerResult(){
+                openTwoPlayerResult("loose");
+            }
+
+            @Override
+            public void getEnemyName(String name){}
         });
     }
 
@@ -214,8 +262,14 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
                     case 3:
                         battleView.disable_all();
                         turn_text.setText("You have won!");
-                        openTwoPlayerResult();
                         enemyView.show_full_map();
+                        if(play_mode.equals(ONLINE_TWO_PLAYER)){
+                            DBConnection.getInstance().insertWindata();
+                            openTwoPlayerResult("win");
+                        }
+                        else if (play_mode.equals(OFFLINE_TWO_PLAYER)){
+                            openTwoPlayerResult("win");
+                        }
                         break;
                     case 0:
                         battleView.disable_all();
@@ -223,23 +277,21 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
                             turn_text.setText("PC turn");
                         }
                         else if(play_mode.equals(ONLINE_TWO_PLAYER)){
-                            turn_text.setText("Enemy turn");
-                            // TODO read enemy name from database and set name
+                            turn_text.setText(enemy_name + " turn");
                         }
                         enemyTurn();
                         break;
                 }
             }
         });
-    }
-
-    @Override
-    public void onClick(View v){
-        System.out.println("HERE  " + v.getId());
-        switch(v.getId()){
-            case R.id.button_end:
-                finish();
-                break;
+        if(play_mode.equals(ONLINE_TWO_PLAYER)){
+            System.out.println(playerInfo);
+            if(playerInfo != null){
+                //TODO test all
+                if(playerInfo.equals("PlayerOne")){
+                    battleView.disable_all();
+                }
+            }
         }
     }
 
@@ -271,14 +323,39 @@ public class Game extends AppCompatActivity implements View.OnClickListener{
         startActivityForResult(player_two_intent, 4);
     }
 
-    public void openTwoPlayerResult(){
+    public void openTwoPlayerResult(final String result){
+        if(play_mode.equals(ONLINE_TWO_PLAYER)){
+            DBConnection.getInstance().increaseUserResult(result);
+            DBConnection.getInstance().setDBConnectionResultListener(new DBConnection.DBConnectionResultListener(){
+                @Override
+                public void resultInfo(int enemy_wins, int enemy_looses, int wins, int looses){
+                    openResult(result, enemy_wins, enemy_looses, wins, looses);
+                }
+            });
+        }
+        else if(play_mode.equals(ONLINE_TWO_PLAYER)){
+            openResult(result, 1, 1, 1, 1);
+        }
+    }
+
+    public void openResult(String result, int enemy_wins, int enemy_looses, int wins, int looses){
         Intent resultIntent = new Intent(this, Result.class);
-        // TODO: player name
-        resultIntent.putExtra("winner", "Player One");
+        resultIntent.putExtra("name", user_name);
+        resultIntent.putExtra("enemy_name", enemy_name);
+        if(result.equals("win")){
+            resultIntent.putExtra("winner", user_name);
+        }
+        else if(result.equals("loose")){
+            resultIntent.putExtra("winner", enemy_name);
+        }
+        resultIntent.putExtra("wins", wins);
+        resultIntent.putExtra("looses", looses);
+        resultIntent.putExtra("enemy_wins", enemy_wins);
+        resultIntent.putExtra("enemy_looses", enemy_looses);
         startActivity(resultIntent);
     }
 
-    public void getEnemy(){
+    public void waitForEnemy(){
         if(battle != null){
             return;
         }
