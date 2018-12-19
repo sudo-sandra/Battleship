@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 
 
 public class OfflineMenu extends AppCompatActivity {
@@ -33,10 +34,10 @@ public class OfflineMenu extends AppCompatActivity {
 
     public void openOfflineLogin() {
         // TODO offline login
-//        Intent registerIntent = new Intent(this, OfflineLogin.class);
-//        startActivity(registerIntent);
-        Intent gameIntent = new Intent(this, Game.class);
-        gameIntent.putExtra("play_mode", Game.OFFLINE_TWO_PLAYER);
-        startActivity(gameIntent);
+        Intent registerIntent = new Intent(this, OfflineLogin.class);
+        startActivity(registerIntent);
+        //Intent gameIntent = new Intent(this, Game.class);
+        //gameIntent.putExtra("play_mode", Game.OFFLINE_TWO_PLAYER);
+        //startActivity(gameIntent);
     }
 }
