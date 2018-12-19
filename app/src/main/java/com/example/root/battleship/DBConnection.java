@@ -14,6 +14,7 @@ import static android.content.ContentValues.TAG;
 public class DBConnection {
     private static DBConnection instance = null;
     private DBConnectionListener listener;
+    private DBConnectionResultListener resultlistener;
     private User currentUser;
     private String playerInfo;
     private String currentGameKey;
@@ -22,12 +23,22 @@ public class DBConnection {
     public interface DBConnectionListener{
         void userExists(boolean userExists);
         void getMap(String map);
-        void gameStarted();
+        void gameStarted(String playerInfo);
         void active();
+        void getEnemyName(String name);
+        void winnerResult();
     }
 
     public void setDBConnectionListener(DBConnection.DBConnectionListener listener) {
         this.listener = listener;
+    }
+
+    public interface DBConnectionResultListener{
+        void resultInfo(int enemy_wins, int enenmy_looses, int wins, int looses);
+    }
+
+    public void setDBConnectionResultListener(DBConnection.DBConnectionResultListener listener) {
+        this.resultlistener = listener;
     }
 
     private DBConnection() {}
@@ -56,20 +67,26 @@ public class DBConnection {
         dbGamedataRef.child(currentGameKey).child(playerInfo + "Map").setValue(map);
     }
 
+    protected void insertWindata(){
+        dbGamedataRef.child(currentGameKey).child(playerInfo + "Map").setValue("win");
+    }
+
     protected void getNewMapdata(){
         dbGamedataRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String map =  dataSnapshot.child(currentGameKey).child(getEnemy() + "Map").getValue(String.class);
                 if (map != null){
+                    if(map.equals("win")){
+                        listener.winnerResult();
+                        return;
+                    }
                     if(!enemyMap.equals(map)){
                         enemyMap = map;
                         listener.getMap(map);
                     }
                 }
-                else{
-                    getNewMapdata();
-                }
+                getNewMapdata();
             }
 
             @Override
@@ -138,15 +155,13 @@ public class DBConnection {
                     if(status.equals("true")){
                         playerInfo = "playerTwo";
                         currentGameKey = shot.getKey();
-                        System.out.println(currentGameKey);
                         insertIntoGame(map);
-                        //listener.gameStarted();
                         return;
                     }
                 }
                 playerInfo = "playerOne";
                 insertNewGame(map);
-                listener.gameStarted();
+                listener.gameStarted(playerInfo);
             }
 
             @Override
@@ -157,13 +172,11 @@ public class DBConnection {
     }
 
     protected void insertNewGame(String map){
-        System.out.println("##################");
-        System.out.println(currentUser);
         currentGameKey = dbGamedataRef.push().getKey();
         dbGamedataRef.child(currentGameKey).child("open").setValue("true");
         dbGamedataRef.child(currentGameKey).child("playerOne").setValue(currentUser.getName());
         insertMapdata(map);
-        dbGamedataRef.child(currentGameKey).child("active").setValue(playerInfo);
+        dbGamedataRef.child(currentGameKey).child("active").setValue(getEnemy());
     }
 
     protected void insertIntoGame(String map) {
@@ -218,8 +231,60 @@ public class DBConnection {
         });
     }
 
+    protected void increaseUserResult(final String result){
+        dbUserdataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Integer current = dataSnapshot.child(currentUser.getName()).child(result).getValue(Integer.class);
+                if(current == null){
+                    current = 0;
+                }
+                current++;
+                dbUserdataRef.child(currentUser.getName()).child(result).setValue(current);
+                Integer wins = dataSnapshot.child(currentUser.getName()).child("win").getValue(Integer.class);
+                Integer looses = dataSnapshot.child(currentUser.getName()).child("loose").getValue(Integer.class);
+                String enemy_name = dataSnapshot.child(currentGameKey).child(getEnemy()).getValue(String.class);
+                if(enemy_name == null){
+                    enemy_name = "";
+                }
+                Integer enemy_wins = dataSnapshot.child(enemy_name).child("win").getValue(Integer.class);
+                Integer enemy_looses = dataSnapshot.child(enemy_name).child("loose").getValue(Integer.class);
+                if(wins == null){
+                    wins = 0;
+                }
+                if(looses == null){
+                    looses = 0;
+                }
+                if(enemy_wins == null){
+                    enemy_wins = 0;
+                }
+                if(enemy_looses == null){
+                    enemy_looses = 0;
+                }
+                resultlistener.resultInfo(enemy_wins, enemy_looses, wins, looses);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     protected void endGame(){
         dbGamedataRef.child(currentGameKey).removeValue();
+    }
+
+    protected  void getEnemyName(){
+        dbGamedataRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listener.getEnemyName(dataSnapshot.child(currentGameKey).child(getEnemy()).getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 
     private String getEnemy(){
