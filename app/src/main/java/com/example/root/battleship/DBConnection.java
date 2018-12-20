@@ -153,10 +153,19 @@ public class DBConnection {
                         status = "";
                     }
                     if(status.equals("true")){
-                        playerInfo = "playerTwo";
-                        currentGameKey = shot.getKey();
-                        insertIntoGame(map);
-                        return;
+                        String enemy = shot.child("playerOne").getValue(String.class);
+                        if(enemy == null){
+                            enemy = "Enemy";
+                        }
+                        System.out.println(enemy);
+                        System.out.println(currentUser.getName());
+                        if(!enemy.equals(currentUser.getName())){
+                            listener.getEnemyName(enemy);
+                            playerInfo = "playerTwo";
+                            currentGameKey = shot.getKey();
+                            insertIntoGame(map);
+                            return;
+                        }
                     }
                 }
                 playerInfo = "playerOne";
