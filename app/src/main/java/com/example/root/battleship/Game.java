@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -36,9 +37,11 @@ public class Game extends AppCompatActivity{
         play_mode = intent.getStringExtra("play_mode");
         turn_text = (TextView)findViewById(R.id.turn_text);
         if(play_mode.equals(OFFLINE_TWO_PLAYER)){
-            // TODO player_name
-            turn_text.setText("player one");
-            //TODO set name to know who
+
+            user_name = intent.getStringExtra("player_one");
+            enemy_name = intent.getStringExtra("player_two");
+            turn_text.setText(user_name);
+
             getBattleFromSetUp();
         }
         else{
@@ -171,7 +174,6 @@ public class Game extends AppCompatActivity{
     }
 
     private void play_against_human(){
-        // TODO: replace Player Names
         getPlayerTwoConfirmation();
     }
 
@@ -295,22 +297,19 @@ public class Game extends AppCompatActivity{
 
     public void getPlayerOneConfirmation(){
         Intent turnIntent = new Intent(this, TurnDisplay.class);
-        // TODO: Player name
-        turnIntent.putExtra("turn_text", "Player One");
+        turnIntent.putExtra("turn_text", user_name);
         startActivityForResult(turnIntent, 2);
     }
 
     public void getPlayerTwoConfirmation(){
         Intent turnIntent = new Intent(this, TurnDisplay.class);
-        // TODO: Player name
-        turnIntent.putExtra("turn_text", "Player Two");
+        turnIntent.putExtra("turn_text", enemy_name);
         startActivityForResult(turnIntent, 3);
     }
 
     public void getPlayerTwoBattle(){
         Intent player_two_intent = new Intent(this, PlayerTwoGame.class);
-        // TODO: player name
-        player_two_intent.putExtra("player_name", "Player Two");
+        player_two_intent.putExtra("player_name", enemy_name);
         player_two_intent.putExtra("battle", enemyBattle);
         player_two_intent.putExtra("enemy_battle", battle);
         startActivityForResult(player_two_intent, 4);
@@ -326,20 +325,30 @@ public class Game extends AppCompatActivity{
                 }
             });
         }
-        else if(play_mode.equals(ONLINE_TWO_PLAYER)){
-            openResult(result, 1, 1, 1, 1);
+        else if(play_mode.equals(OFFLINE_TWO_PLAYER)){
+            SqLiteDatabseManager databseManager = new SqLiteDatabseManager(this);
+            ArrayList<Integer> playerOneScore = databseManager.readScoreOfPlayer(user_name);
+            ArrayList<Integer> playerTwoScore = databseManager.readScoreOfPlayer(enemy_name);
+            openResult(result, playerTwoScore.get(0), playerTwoScore.get(1), playerOneScore.get(0), playerOneScore.get(1));
         }
     }
 
     public void openResult(String result, int enemy_wins, int enemy_looses, int wins, int looses){
         Intent resultIntent = new Intent(this, Result.class);
+        SqLiteDatabseManager databseManager = new SqLiteDatabseManager(this);
         resultIntent.putExtra("name", user_name);
         resultIntent.putExtra("enemy_name", enemy_name);
         if(result.equals("win")){
             resultIntent.putExtra("winner", user_name);
+            //todo add lose and win
+            databseManager.addWin(user_name);
+            databseManager.addLoose(enemy_name);
         }
         else if(result.equals("loose")){
             resultIntent.putExtra("winner", enemy_name);
+            //todo add lose and win
+            databseManager.addWin(enemy_name);
+            databseManager.addLoose(user_name);
         }
         resultIntent.putExtra("wins", wins);
         resultIntent.putExtra("looses", looses);
