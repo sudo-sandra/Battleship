@@ -9,6 +9,8 @@ import android.widget.EditText;
 import java.util.ArrayList;
 
 public class OfflineLogin extends AppCompatActivity {
+    private String playerOneName;
+    private String playerTwoName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +25,12 @@ public class OfflineLogin extends AppCompatActivity {
                 EditText playerOneNameField = findViewById(R.id.playerOneLoginField);
                 EditText playerTwoNameField = findViewById(R.id.playerTwoLoginField);
 
+                playerOneName = playerOneNameField.getText().toString();
+                playerTwoName = playerTwoNameField.getText().toString();
+
                 SqLiteDatabseManager dbManager = new SqLiteDatabseManager(this);
-                System.out.println("Open SQLite Connection");
-                dbManager.insertDataIntoSQLite(playerOneNameField.getText().toString(), playerTwoNameField.getText().toString());
-                ArrayList<String> dbData = dbManager.readDataFromSQLite();
+                dbManager.insertDataIntoSQLite(playerOneNameField.getText().toString());
+                dbManager.insertDataIntoSQLite(playerTwoNameField.getText().toString());
 
                 openGame();
                 break;
@@ -36,6 +40,8 @@ public class OfflineLogin extends AppCompatActivity {
     private void openGame() {
         Intent gameIntent = new Intent(this, Game.class);
         gameIntent.putExtra("play_mode", Game.OFFLINE_TWO_PLAYER);
+        gameIntent.putExtra("player_one", playerOneName);
+        gameIntent.putExtra("player_two", playerTwoName);
         startActivity(gameIntent);
     }
 }

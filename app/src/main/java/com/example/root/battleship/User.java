@@ -23,6 +23,12 @@ public class User {
         this.looses = looses;
     }
 
+    public User (String username, int wins, int looses) {
+        this.name = username;
+        this.wins = wins;
+        this.looses = looses;
+    }
+
     public String getName(){
         return name;
     }

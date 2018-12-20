@@ -18,30 +18,21 @@ public class SqLiteDatabseManager extends SQLiteOpenHelper {
     //Table name: userdata
     private static final String TABLE_USERDATA = "userdata";
     //Table columns
-    private static final String COLUMN_PLAYER_ONE = "playerOne";
-    private static final String COLUMN_PLAYER_ONE_WINS = "playerOneWins";
-    private static final String COLUMN_PLAYER_ONE_LOSES = "playerOneLoses";
-    private static final String COLUMN_PLAYER_TWO = "playerTwo";
-    private static final String COLUMN_PLAYER_TWO_WINS = "playerTwoWins";
-    private static final String COLUMN_PLAYER_TWO_LOSES = "playerTwoLoses";
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_WIN = "win";
+    private static final String COLUMN_LOSE = "lose";
     //create table statement
     private static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_USERDATA +
-            "(" + COLUMN_PLAYER_ONE + " TEXT NOT NULL," +
-            COLUMN_PLAYER_ONE_WINS + " INTEGER DEFAULT 0," +
-            COLUMN_PLAYER_ONE_LOSES + " INTEGER DEFAULT 0," +
-            COLUMN_PLAYER_TWO + " TEXT NOT NULL," +
-            COLUMN_PLAYER_TWO_WINS + " INTEGER DEFAULT 0," +
-            COLUMN_PLAYER_TWO_LOSES + " INTEGER DEFAULT 0);";
+            "(" + COLUMN_NAME + " TEXT NOT NULL," +
+            COLUMN_WIN + " INTEGER DEFAULT 0," +
+            COLUMN_LOSE + " INTEGER DEFAULT 0);";
 
     private static final String LOG_TAG = SqLiteDatabseManager.class.getSimpleName();
     private SQLiteDatabase database = this.getWritableDatabase();
 
-    private String playerOneName;
-    private int playerOneWins;
-    private int playerOneLoses;
-    private String playerTwoName;
-    private int playerTwoWins;
-    private int playerTwoLoses;
+
+    private ArrayList<Integer> playerScore = new ArrayList<>();
+    private ContentValues values = new ContentValues();
 
     SqLiteDatabseManager(Context activity) {
         super(activity, DATABASE_NAME, null, DATABASE_VERSION);
@@ -54,7 +45,7 @@ public class SqLiteDatabseManager extends SQLiteOpenHelper {
         //create table
         try {
             Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " + SQL_CREATE_TABLE + " angelegt.");
-            db.execSQL(SQL_CREATE_TABLE);
+            database.execSQL(SQL_CREATE_TABLE);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Fehler beim Anlegen der Tabelle: " + e.getMessage());
         }
@@ -64,55 +55,79 @@ public class SqLiteDatabseManager extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.i(TAG, "SqLiteDatabaseManager.onUpgrade...");
         //Drop older table if exists
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERDATA);
+        database.execSQL("DROP TABLE IF EXISTS " + TABLE_USERDATA);
 
         //Create table again
         onCreate(db);
     }
 
-    public void insertDataIntoSQLite(String playerOneName, String playerTwoName){
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_PLAYER_ONE, playerOneName);
-        values.put(COLUMN_PLAYER_TWO, playerTwoName);
-
-        //Inserting Row
-        database.insert(TABLE_USERDATA, null, values);
-
-        System.out.println("Inserted");
+    protected void insertDataIntoSQLite(String playerName){
+        values.put(COLUMN_NAME, playerName.trim());
+        if(!checkIfUserExists(playerName.trim())) {
+            //Inserting Row
+            database.insert(TABLE_USERDATA, null, values);
+        }
 
     }
 
-    public ArrayList<String> readDataFromSQLite() {
-        ArrayList<String> userdata = new ArrayList<>();
+    private boolean checkIfUserExists(String username) {
+        Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_USERDATA + " WHERE " + COLUMN_NAME + "=?;", new String[]{username.trim()});
+        if (cursor.moveToFirst()) {
+            return true;
+        }
+        return false;
+    }
+
+    public ArrayList<User> readDataFromSQLite() {
+        ArrayList<User> userdata = new ArrayList<>();
 
         String selectData = "SELECT * FROM " + TABLE_USERDATA;
         Cursor cursor = database.rawQuery(selectData, null);
-
+        User user;
         //fetching data saving into arraylist
         if(cursor.moveToFirst()) {
-            userdata.add(cursor.getString(0));
-            userdata.add(cursor.getString(1));
-            userdata.add(cursor.getString(2));
-            userdata.add(cursor.getString(3));
+            do {
+                user = new User(cursor.getString(0), cursor.getInt(1), cursor.getInt(2));
+                userdata.add(user);
+
+             }while(cursor.moveToNext());
         }
-        
+
         cursor.close();
         return userdata;
     }
 
-    public void updateScore(String winner) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public void addWin(String playerName) {
+        playerScore = readScoreOfPlayer(playerName);
+        Integer win = playerScore.get(0);
+        values.put(COLUMN_WIN, win+1);
+        database.insert(TABLE_USERDATA, null, values);
 
-        ContentValues values = new ContentValues();
-        if (winner.equals("playerOne")) {
-            values.put(COLUMN_PLAYER_ONE_WINS, playerOneWins + 1);
-            values.put(COLUMN_PLAYER_TWO_LOSES, playerTwoLoses + 1);
-            db.update(TABLE_USERDATA, values,COLUMN_PLAYER_ONE + " = ?", new String[]{String.valueOf(playerOneName)});
-        } else {
-            values.put(COLUMN_PLAYER_TWO_WINS, playerTwoWins + 1);
-            values.put(COLUMN_PLAYER_ONE_LOSES, playerOneLoses + 1);
-            db.update(TABLE_USERDATA, values,COLUMN_PLAYER_TWO + " = ?", new String[]{String.valueOf(playerTwoName)});
+    }
+
+    public void addLoose(String playerName) {
+        playerScore = readScoreOfPlayer(playerName);
+        Integer lose = playerScore.get(1);
+        values.put(COLUMN_LOSE, lose+1);
+        database.insert(TABLE_USERDATA, null, values);
+
+    }
+
+    public ArrayList<Integer> readScoreOfPlayer(String playerName) {
+        Integer wins;
+        Integer looses;
+        Cursor cursor = database.rawQuery("SELECT " + COLUMN_WIN + ", " + COLUMN_LOSE + " FROM " + TABLE_USERDATA + " WHERE TRIM(" + COLUMN_NAME + ") = '" + playerName.trim() + "';", null);
+
+        if(cursor.moveToNext()) {
+            do{
+                wins = cursor.getInt(0);
+                playerScore.add(wins);
+                looses = cursor.getInt(1);
+                playerScore.add(looses);
+            }while(cursor.moveToNext());
         }
 
+        cursor.close();
+        return playerScore;
     }
 }
