@@ -24,9 +24,6 @@
         <activity
             android:name="com.example.root.battleship.RegisterActivity"
             android:screenOrientation="landscape" />
-        <activity
-            android:name="com.example.root.battleship.MenuActivity"
-            android:screenOrientation="landscape" />
         <activity android:name=".Game"
             android:screenOrientation="landscape" />
         <activity android:name=".SetUpMap"

@@ -32,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
                             if (userExists) {
                                 Toast.makeText(RegisterActivity.this, "Please change your username", Toast.LENGTH_LONG).show();
                             } else {
-                                openGameMenuActivity();
+                                openLoginActivity();
                             }
                         }
                         @Override
@@ -55,9 +55,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    private void openGameMenuActivity() {
-        Intent gameMenuIntent = new Intent(this, MenuActivity.class);
-        startActivity(gameMenuIntent);
+    private void openLoginActivity() {
+        Intent loginIntent = new Intent(this, LoginActivity.class);
+        startActivity(loginIntent);
     }
 
     private void openErrorMessage(String msg) {
