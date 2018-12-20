@@ -281,7 +281,7 @@ public class DBConnection {
     }
 
     protected void endGame(){
-        dbGamedataRef.child(currentGameKey).removeValue();
+        //dbGamedataRef.child(currentGameKey).removeValue();
     }
 
     protected  void getEnemyName(){

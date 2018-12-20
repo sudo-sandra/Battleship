@@ -55,8 +55,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void openGameMenuActivity() {
-//        Intent menuIntent = new Intent(this, MenuActivity.class);
-//        startActivity(menuIntent);
         Intent gameIntent = new Intent(this, Game.class);
         gameIntent.putExtra("play_mode", Game.ONLINE_TWO_PLAYER);
         EditText usernameTxt = findViewById(R.id.usernameLoginField);

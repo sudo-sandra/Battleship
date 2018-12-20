@@ -111,24 +111,16 @@ public class Game extends AppCompatActivity{
                     DBConnection.getInstance().getEnemyName();
                     DBConnection.getInstance().setDBConnectionListener(new DBConnection.DBConnectionListener() {
                         @Override
-                        public void userExists(boolean userExists) {
-
-                        }
+                        public void userExists(boolean userExists) {}
 
                         @Override
-                        public void getMap(String map) {
-
-                        }
+                        public void getMap(String map) {}
 
                         @Override
-                        public void gameStarted(String playerInfo) {
-
-                        }
+                        public void gameStarted(String playerInfo) {}
 
                         @Override
-                        public void active() {
-
-                        }
+                        public void active() {}
 
                         @Override
                         public void getEnemyName(String name) {
@@ -136,9 +128,7 @@ public class Game extends AppCompatActivity{
                         }
 
                         @Override
-                        public void winnerResult() {
-
-                        }
+                        public void winnerResult() {}
                     });
                     battle = new Battleship();
                     battle.set_mapString(map);
@@ -284,7 +274,10 @@ public class Game extends AppCompatActivity{
                 }
             }
         });
-        if(play_mode.equals(ONLINE_TWO_PLAYER)){
+        if(play_mode.equals(OFFLINE_TWO_PLAYER)){
+            getPlayerOneConfirmation();
+        }
+        else if(play_mode.equals(ONLINE_TWO_PLAYER)){
             System.out.println(playerInfo);
             if(playerInfo != null){
                 //TODO test all

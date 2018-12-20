@@ -11,7 +11,6 @@ public class Battleship implements Serializable{
 
     public Battleship(){
         create_ships();
-        create_ships();
     }
 
     public void create_ships(){
