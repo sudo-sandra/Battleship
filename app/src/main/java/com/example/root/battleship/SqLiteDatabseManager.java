@@ -22,7 +22,7 @@ public class SqLiteDatabseManager extends SQLiteOpenHelper {
     private static final String COLUMN_WIN = "win";
     private static final String COLUMN_LOSE = "lose";
     //create table statement
-    private static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_USERDATA +
+    private static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_USERDATA +
             "(" + COLUMN_NAME + " TEXT NOT NULL," +
             COLUMN_WIN + " INTEGER DEFAULT 0," +
             COLUMN_LOSE + " INTEGER DEFAULT 0);";
@@ -37,18 +37,24 @@ public class SqLiteDatabseManager extends SQLiteOpenHelper {
     SqLiteDatabseManager(Context activity) {
         super(activity, DATABASE_NAME, null, DATABASE_VERSION);
         Log.d(LOG_TAG, "DbHelper hat die Datenbank: " + getDatabaseName() + " erzeugt.");
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-
-        //create table
         try {
             Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " + SQL_CREATE_TABLE + " angelegt.");
             database.execSQL(SQL_CREATE_TABLE);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Fehler beim Anlegen der Tabelle: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+
+        //create table
+//        try {
+//            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " + SQL_CREATE_TABLE + " angelegt.");
+//            database.execSQL(SQL_CREATE_TABLE);
+//        } catch (Exception e) {
+//            Log.e(LOG_TAG, "Fehler beim Anlegen der Tabelle: " + e.getMessage());
+//        }
     }
 
     @Override
@@ -61,7 +67,7 @@ public class SqLiteDatabseManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    protected void insertDataIntoSQLite(String playerName){
+    protected void insertUserIntoSQLite(String playerName){
         values.put(COLUMN_NAME, playerName.trim());
         if(!checkIfUserExists(playerName.trim())) {
             //Inserting Row

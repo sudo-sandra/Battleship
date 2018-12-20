@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import java.util.ArrayList;
-
 public class OfflineLogin extends AppCompatActivity {
     private String playerOneName;
     private String playerTwoName;
@@ -21,7 +19,6 @@ public class OfflineLogin extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.start_button:
-                // TODO: sqlite database zeugs!!
                 EditText playerOneNameField = findViewById(R.id.playerOneLoginField);
                 EditText playerTwoNameField = findViewById(R.id.playerTwoLoginField);
 
@@ -29,8 +26,8 @@ public class OfflineLogin extends AppCompatActivity {
                 playerTwoName = playerTwoNameField.getText().toString();
 
                 SqLiteDatabseManager dbManager = new SqLiteDatabseManager(this);
-                dbManager.insertDataIntoSQLite(playerOneNameField.getText().toString());
-                dbManager.insertDataIntoSQLite(playerTwoNameField.getText().toString());
+                dbManager.insertUserIntoSQLite(playerOneNameField.getText().toString());
+                dbManager.insertUserIntoSQLite(playerTwoNameField.getText().toString());
 
                 openGame();
                 break;

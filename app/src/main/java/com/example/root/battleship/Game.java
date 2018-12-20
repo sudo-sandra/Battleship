@@ -79,6 +79,16 @@ public class Game extends AppCompatActivity{
                 getPlayerTwoBattle();
                 break;
             case 4:
+                try{
+                    if(data.getStringExtra("won").equals("Yes")){
+                        SqLiteDatabseManager databseManager = new SqLiteDatabseManager(this);
+                        ArrayList<Integer> playerOneScore = databseManager.readScoreOfPlayer(user_name);
+                        ArrayList<Integer> playerTwoScore = databseManager.readScoreOfPlayer(enemy_name);
+                        openResult("loose", playerTwoScore.get(0), playerTwoScore.get(1), playerOneScore.get(0), playerOneScore.get(1));
+                        return;
+                    }
+                }
+                catch (Exception e){}
                 enemyBattle = (Battleship) data.getSerializableExtra("battle");
                 getPlayerOneConfirmation();
                 break;
@@ -309,6 +319,7 @@ public class Game extends AppCompatActivity{
 
     public void getPlayerTwoBattle(){
         Intent player_two_intent = new Intent(this, PlayerTwoGame.class);
+        player_two_intent.putExtra("player_one_name", user_name);
         player_two_intent.putExtra("player_name", enemy_name);
         player_two_intent.putExtra("battle", enemyBattle);
         player_two_intent.putExtra("enemy_battle", battle);
@@ -340,13 +351,11 @@ public class Game extends AppCompatActivity{
         resultIntent.putExtra("enemy_name", enemy_name);
         if(result.equals("win")){
             resultIntent.putExtra("winner", user_name);
-            //todo add lose and win
             databseManager.addWin(user_name);
             databseManager.addLoose(enemy_name);
         }
         else if(result.equals("loose")){
             resultIntent.putExtra("winner", enemy_name);
-            //todo add lose and win
             databseManager.addWin(enemy_name);
             databseManager.addLoose(user_name);
         }
