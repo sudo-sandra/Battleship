@@ -27,11 +27,11 @@ public class SqLiteDatabseManager extends SQLiteOpenHelper {
     //create table statement
     private static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_USERDATA +
             "(" + COLUMN_PLAYER_ONE + " TEXT NOT NULL," +
-            COLUMN_PLAYER_ONE_WINS + " INTEGER," +
-            COLUMN_PLAYER_ONE_LOSES + " INTEGER," +
+            COLUMN_PLAYER_ONE_WINS + " INTEGER DEFAULT 0," +
+            COLUMN_PLAYER_ONE_LOSES + " INTEGER DEFAULT 0," +
             COLUMN_PLAYER_TWO + " TEXT NOT NULL," +
-            COLUMN_PLAYER_TWO_WINS + " INTEGER," +
-            COLUMN_PLAYER_TWO_LOSES + " INTEGER);";
+            COLUMN_PLAYER_TWO_WINS + " INTEGER DEFAULT 0," +
+            COLUMN_PLAYER_TWO_LOSES + " INTEGER DEFAULT 0);";
 
     private static final String LOG_TAG = SqLiteDatabseManager.class.getSimpleName();
     private SQLiteDatabase database = this.getWritableDatabase();
@@ -95,6 +95,7 @@ public class SqLiteDatabseManager extends SQLiteOpenHelper {
             userdata.add(cursor.getString(2));
             userdata.add(cursor.getString(3));
         }
+        
         cursor.close();
         return userdata;
     }

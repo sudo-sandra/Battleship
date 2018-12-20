@@ -8,7 +8,6 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
-
 public class OfflineLogin extends AppCompatActivity {
 
     @Override
@@ -27,11 +26,7 @@ public class OfflineLogin extends AppCompatActivity {
                 SqLiteDatabseManager dbManager = new SqLiteDatabseManager(this);
                 System.out.println("Open SQLite Connection");
                 dbManager.insertDataIntoSQLite(playerOneNameField.getText().toString(), playerTwoNameField.getText().toString());
-
                 ArrayList<String> dbData = dbManager.readDataFromSQLite();
-                for (int i = 0; i <= dbData.size(); i++) {
-                    System.out.println(dbData.get(i));
-                }
 
                 openGame();
                 break;
