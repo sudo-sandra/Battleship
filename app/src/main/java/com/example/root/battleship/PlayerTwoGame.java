@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class PlayerTwoGame extends AppCompatActivity{
 
     TextView turn_text;
@@ -15,6 +17,8 @@ public class PlayerTwoGame extends AppCompatActivity{
     Battleship enemyBattle;
     BattleshipView battleView;
     BattleshipView enemyView;
+    String user_name;  // PlayerOne
+    String enemy_name;  // PlayerTwo
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,14 +27,16 @@ public class PlayerTwoGame extends AppCompatActivity{
 
         Intent intent = getIntent();
         turn_text = (TextView)findViewById(R.id.turn_text);
-        turn_text.setText(intent.getStringExtra("player_name"));
+        enemy_name = intent.getStringExtra("player_name");
+        user_name = intent.getStringExtra("player1_name");
+        System.out.println(enemy_name + "   " + user_name);
+        turn_text.setText(enemy_name);
         battle = (Battleship) intent.getSerializableExtra("battle");
         enemyBattle = (Battleship) intent.getSerializableExtra("enemy_battle");
         set_up_map();
         battleView.setBattleshipViewListener(new BattleshipView.BattleshipViewListener(){
             @Override
             public void onFieldDestroyed(int destroyStatus) {
-                // TODO: write new map to database
                 // case 1 and 2 -> destroyed ship -> you're turn again
                 switch (destroyStatus){
                     case 3:
@@ -64,9 +70,10 @@ public class PlayerTwoGame extends AppCompatActivity{
     }
 
     public void openTwoPlayerResult(){
-        Intent resultIntent = new Intent(this, Result.class);
-        // TODO: player name
-        resultIntent.putExtra("winner", "Player Two");
-        startActivity(resultIntent);
+        Intent gameIntent = new Intent();
+        gameIntent.putExtra("battle", battle);
+        gameIntent.putExtra("won", "Yes");
+        setResult(Activity.RESULT_OK, gameIntent);
+        finish();
     }
 }
