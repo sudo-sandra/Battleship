@@ -9,7 +9,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-public class SqLiteDatabseManager extends SQLiteOpenHelper {
+public class SqLiteDatabaseManager extends SQLiteOpenHelper {
     private static final String TAG = "SQLite";
     //Database Version
     private static final int DATABASE_VERSION = 1;
@@ -27,14 +27,10 @@ public class SqLiteDatabseManager extends SQLiteOpenHelper {
             COLUMN_WIN + " INTEGER DEFAULT 0," +
             COLUMN_LOSE + " INTEGER DEFAULT 0);";
 
-    private static final String LOG_TAG = SqLiteDatabseManager.class.getSimpleName();
+    private static final String LOG_TAG = SqLiteDatabaseManager.class.getSimpleName();
     private SQLiteDatabase database = this.getWritableDatabase();
 
-
-    private ArrayList<Integer> playerScore = new ArrayList<>();
-    private ContentValues values = new ContentValues();
-
-    SqLiteDatabseManager(Context activity) {
+    SqLiteDatabaseManager(Context activity) {
         super(activity, DATABASE_NAME, null, DATABASE_VERSION);
         Log.d(LOG_TAG, "DbHelper hat die Datenbank: " + getDatabaseName() + " erzeugt.");
         try {
@@ -48,13 +44,6 @@ public class SqLiteDatabseManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        //create table
-//        try {
-//            Log.d(LOG_TAG, "Die Tabelle wird mit SQL-Befehl: " + SQL_CREATE_TABLE + " angelegt.");
-//            database.execSQL(SQL_CREATE_TABLE);
-//        } catch (Exception e) {
-//            Log.e(LOG_TAG, "Fehler beim Anlegen der Tabelle: " + e.getMessage());
-//        }
     }
 
     @Override
@@ -68,6 +57,7 @@ public class SqLiteDatabseManager extends SQLiteOpenHelper {
     }
 
     protected void insertUserIntoSQLite(String playerName){
+        ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, playerName.trim());
         if(!checkIfUserExists(playerName.trim())) {
             //Inserting Row
@@ -104,33 +94,42 @@ public class SqLiteDatabseManager extends SQLiteOpenHelper {
     }
 
     public void addWin(String playerName) {
-        playerScore = readScoreOfPlayer(playerName);
-        Integer win = playerScore.get(0);
-        values.put(COLUMN_WIN, win+1);
-        database.insert(TABLE_USERDATA, null, values);
-
+        ContentValues values = new ContentValues();
+        ArrayList<Integer> playerScore = readScoreOfPlayer(playerName);
+        Integer win = playerScore.get(0)+1;
+        values.put(COLUMN_WIN, win);
+        System.out.println("W " + win);
+        System.out.println(playerName);
+        database.update(TABLE_USERDATA, values, COLUMN_NAME + "=?", new String[]{playerName});
+        System.out.println("Inserted Win" + readScoreOfPlayer(playerName));
     }
 
     public void addLoose(String playerName) {
-        playerScore = readScoreOfPlayer(playerName);
-        Integer lose = playerScore.get(1);
-        values.put(COLUMN_LOSE, lose+1);
-        database.insert(TABLE_USERDATA, null, values);
-
+        ContentValues values = new ContentValues();
+        ArrayList<Integer> playerScore = readScoreOfPlayer(playerName);
+        Integer loose = playerScore.get(1)+1;
+        values.put(COLUMN_LOSE, loose);
+        System.out.println("L " + loose);
+        System.out.println(playerName);
+        database.update(TABLE_USERDATA, values, COLUMN_NAME + "=?", new String[]{playerName});
+        System.out.println("Inserted Loose" + readScoreOfPlayer(playerName));
     }
 
+
     public ArrayList<Integer> readScoreOfPlayer(String playerName) {
+        ArrayList<Integer> playerScore = new ArrayList<>();
+
         Integer wins;
         Integer looses;
-        Cursor cursor = database.rawQuery("SELECT " + COLUMN_WIN + ", " + COLUMN_LOSE + " FROM " + TABLE_USERDATA + " WHERE TRIM(" + COLUMN_NAME + ") = '" + playerName.trim() + "';", null);
-
+        Cursor cursor = database.rawQuery("SELECT " + COLUMN_WIN + ", " + COLUMN_LOSE + " FROM " + TABLE_USERDATA + " WHERE " + COLUMN_NAME + " =?;", new String[]{playerName.trim()});
+        System.out.println("Size of cursor " + cursor.getCount());
         if(cursor.moveToNext()) {
-            do{
-                wins = cursor.getInt(0);
-                playerScore.add(wins);
-                looses = cursor.getInt(1);
-                playerScore.add(looses);
-            }while(cursor.moveToNext());
+            wins = cursor.getInt(0);
+            System.out.println("getScore Wins: " + wins);
+            playerScore.add(wins);
+            looses = cursor.getInt(1);
+            System.out.println("getScore Looses: " + looses);
+            playerScore.add(looses);
         }
 
         cursor.close();

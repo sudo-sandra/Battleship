@@ -81,7 +81,7 @@ public class Game extends AppCompatActivity{
             case 4:
                 try{
                     if(data.getStringExtra("won").equals("Yes")){
-                        SqLiteDatabseManager databseManager = new SqLiteDatabseManager(this);
+                        SqLiteDatabaseManager databseManager = new SqLiteDatabaseManager(this);
                         ArrayList<Integer> playerOneScore = databseManager.readScoreOfPlayer(user_name);
                         ArrayList<Integer> playerTwoScore = databseManager.readScoreOfPlayer(enemy_name);
                         openResult("loose", playerTwoScore.get(0), playerTwoScore.get(1), playerOneScore.get(0), playerOneScore.get(1));
@@ -268,9 +268,11 @@ public class Game extends AppCompatActivity{
                         if(play_mode.equals(ONLINE_TWO_PLAYER)){
                             DBConnection.getInstance().insertWindata();
                             openTwoPlayerResult("win");
+                            return;
                         }
                         else if (play_mode.equals(OFFLINE_TWO_PLAYER)){
                             openTwoPlayerResult("win");
+                            return;
                         }
                         break;
                     case 0:
@@ -290,7 +292,6 @@ public class Game extends AppCompatActivity{
             getPlayerOneConfirmation();
         }
         else if(play_mode.equals(ONLINE_TWO_PLAYER)){
-            System.out.println(playerInfo);
             if(playerInfo != null){
                 //TODO test all
                 if(playerInfo.equals("PlayerOne")){
@@ -337,27 +338,34 @@ public class Game extends AppCompatActivity{
             });
         }
         else if(play_mode.equals(OFFLINE_TWO_PLAYER)){
-            SqLiteDatabseManager databseManager = new SqLiteDatabseManager(this);
-            ArrayList<Integer> playerOneScore = databseManager.readScoreOfPlayer(user_name);
-            ArrayList<Integer> playerTwoScore = databseManager.readScoreOfPlayer(enemy_name);
+            SqLiteDatabaseManager databaseManager = new SqLiteDatabaseManager(this);
+            ArrayList<Integer> playerOneScore = databaseManager.readScoreOfPlayer(user_name);
+            ArrayList<Integer> playerTwoScore = databaseManager.readScoreOfPlayer(enemy_name);
             openResult(result, playerTwoScore.get(0), playerTwoScore.get(1), playerOneScore.get(0), playerOneScore.get(1));
         }
     }
 
     public void openResult(String result, int enemy_wins, int enemy_looses, int wins, int looses){
         Intent resultIntent = new Intent(this, Result.class);
-        SqLiteDatabseManager databseManager = new SqLiteDatabseManager(this);
+        SqLiteDatabaseManager databaseManager = new SqLiteDatabaseManager(this);
         resultIntent.putExtra("name", user_name);
         resultIntent.putExtra("enemy_name", enemy_name);
+        System.out.println(result + " " + enemy_wins + " " + enemy_looses + " " + wins + " " + looses);
         if(result.equals("win")){
             resultIntent.putExtra("winner", user_name);
-            databseManager.addWin(user_name);
-            databseManager.addLoose(enemy_name);
+            wins++;
+            enemy_looses++;
+            databaseManager.addWin(user_name);
+            databaseManager.addLoose(enemy_name);
+            System.out.println("Added into db" + result + " " + enemy_wins + " " + enemy_looses + " " + wins + " " + looses);
         }
         else if(result.equals("loose")){
             resultIntent.putExtra("winner", enemy_name);
-            databseManager.addWin(enemy_name);
-            databseManager.addLoose(user_name);
+            enemy_wins++;
+            looses++;
+            databaseManager.addWin(enemy_name);
+            databaseManager.addLoose(user_name);
+            System.out.println("added into db" + result + " " + enemy_wins + " " + enemy_looses + " " + wins + " " + looses);
         }
         resultIntent.putExtra("wins", wins);
         resultIntent.putExtra("looses", looses);

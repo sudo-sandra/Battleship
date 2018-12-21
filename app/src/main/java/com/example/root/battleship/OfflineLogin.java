@@ -16,6 +16,7 @@ public class OfflineLogin extends AppCompatActivity {
         setContentView(R.layout.offline_login);
     }
 
+
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.start_button:
@@ -24,15 +25,17 @@ public class OfflineLogin extends AppCompatActivity {
 
                 playerOneName = playerOneNameField.getText().toString();
                 playerTwoName = playerTwoNameField.getText().toString();
+                if(!playerOneName.isEmpty() && !playerTwoName.isEmpty()) {
+                    SqLiteDatabaseManager dbManager = new SqLiteDatabaseManager(this);
+                    dbManager.insertUserIntoSQLite(playerOneNameField.getText().toString());
+                    dbManager.insertUserIntoSQLite(playerTwoNameField.getText().toString());
 
-                SqLiteDatabseManager dbManager = new SqLiteDatabseManager(this);
-                dbManager.insertUserIntoSQLite(playerOneNameField.getText().toString());
-                dbManager.insertUserIntoSQLite(playerTwoNameField.getText().toString());
-
-                openGame();
+                    openGame();
+                }
                 break;
         }
     }
+
 
     private void openGame() {
         Intent gameIntent = new Intent(this, Game.class);
