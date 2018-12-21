@@ -4,7 +4,7 @@ public class User {
     private String name;
     private String password;
     private int wins;
-    private int looses;
+    private int loses;
 
     public User (){
         this.name = "";
@@ -16,17 +16,17 @@ public class User {
         this.password = userpassword;
     }
 
-    public User (String username, String userpassword, int wins, int looses) {
+    public User (String username, String userpassword, int wins, int loses) {
         this.name = username;
         this.password = userpassword;
         this.wins = wins;
-        this.looses = looses;
+        this.loses = loses;
     }
 
-    public User (String username, int wins, int looses) {
+    public User (String username, int wins, int loses) {
         this.name = username;
         this.wins = wins;
-        this.looses = looses;
+        this.loses = loses;
     }
 
     public String getName(){

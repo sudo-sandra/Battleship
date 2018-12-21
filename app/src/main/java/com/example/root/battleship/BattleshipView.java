@@ -163,7 +163,6 @@ public class BattleshipView{
     }
 
     public void enable_all(){
-        System.out.println("Enable all");
         Integer[][] map = battle.get_map();
         for(int i = 0; i < 10; i++){
             for(int k = 0; k < 10; k++){

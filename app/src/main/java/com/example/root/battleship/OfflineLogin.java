@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class OfflineLogin extends AppCompatActivity {
     private String playerOneName;
@@ -31,6 +32,8 @@ public class OfflineLogin extends AppCompatActivity {
                     dbManager.insertUserIntoSQLite(playerTwoNameField.getText().toString());
 
                     openGame();
+                } else {
+                    Toast.makeText(OfflineLogin.this, "Please set usernames!", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

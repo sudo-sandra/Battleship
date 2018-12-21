@@ -84,7 +84,7 @@ public class Game extends AppCompatActivity{
                         SqLiteDatabaseManager databseManager = new SqLiteDatabaseManager(this);
                         ArrayList<Integer> playerOneScore = databseManager.readScoreOfPlayer(user_name);
                         ArrayList<Integer> playerTwoScore = databseManager.readScoreOfPlayer(enemy_name);
-                        openResult("loose", playerTwoScore.get(0), playerTwoScore.get(1), playerOneScore.get(0), playerOneScore.get(1));
+                        openResult("lose", playerTwoScore.get(0), playerTwoScore.get(1), playerOneScore.get(0), playerOneScore.get(1));
                         return;
                     }
                 }
@@ -212,7 +212,7 @@ public class Game extends AppCompatActivity{
 
             @Override
             public  void winnerResult(){
-                openTwoPlayerResult("loose");
+                openTwoPlayerResult("lose");
             }
 
             @Override
@@ -332,8 +332,8 @@ public class Game extends AppCompatActivity{
             DBConnection.getInstance().increaseUserResult(result);
             DBConnection.getInstance().setDBConnectionResultListener(new DBConnection.DBConnectionResultListener(){
                 @Override
-                public void resultInfo(int enemy_wins, int enemy_looses, int wins, int looses){
-                    openResult(result, enemy_wins, enemy_looses, wins, looses);
+                public void resultInfo(int enemy_wins, int enemy_loses, int wins, int loses){
+                    openResult(result, enemy_wins, enemy_loses, wins, loses);
                 }
             });
         }
@@ -345,32 +345,29 @@ public class Game extends AppCompatActivity{
         }
     }
 
-    public void openResult(String result, int enemy_wins, int enemy_looses, int wins, int looses){
+    public void openResult(String result, int enemy_wins, int enemy_loses, int wins, int loses){
         Intent resultIntent = new Intent(this, Result.class);
         SqLiteDatabaseManager databaseManager = new SqLiteDatabaseManager(this);
         resultIntent.putExtra("name", user_name);
         resultIntent.putExtra("enemy_name", enemy_name);
-        System.out.println(result + " " + enemy_wins + " " + enemy_looses + " " + wins + " " + looses);
         if(result.equals("win")){
             resultIntent.putExtra("winner", user_name);
             wins++;
-            enemy_looses++;
+            enemy_loses++;
             databaseManager.addWin(user_name);
-            databaseManager.addLoose(enemy_name);
-            System.out.println("Added into db" + result + " " + enemy_wins + " " + enemy_looses + " " + wins + " " + looses);
+            databaseManager.addLose(enemy_name);
         }
-        else if(result.equals("loose")){
+        else if(result.equals("lose")){
             resultIntent.putExtra("winner", enemy_name);
             enemy_wins++;
-            looses++;
+            loses++;
             databaseManager.addWin(enemy_name);
-            databaseManager.addLoose(user_name);
-            System.out.println("added into db" + result + " " + enemy_wins + " " + enemy_looses + " " + wins + " " + looses);
+            databaseManager.addLose(user_name);
         }
         resultIntent.putExtra("wins", wins);
-        resultIntent.putExtra("looses", looses);
+        resultIntent.putExtra("loses", loses);
         resultIntent.putExtra("enemy_wins", enemy_wins);
-        resultIntent.putExtra("enemy_looses", enemy_looses);
+        resultIntent.putExtra("enemy_loses", enemy_loses);
         startActivity(resultIntent);
     }
 

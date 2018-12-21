@@ -98,21 +98,15 @@ public class SqLiteDatabaseManager extends SQLiteOpenHelper {
         ArrayList<Integer> playerScore = readScoreOfPlayer(playerName);
         Integer win = playerScore.get(0)+1;
         values.put(COLUMN_WIN, win);
-        System.out.println("W " + win);
-        System.out.println(playerName);
         database.update(TABLE_USERDATA, values, COLUMN_NAME + "=?", new String[]{playerName});
-        System.out.println("Inserted Win" + readScoreOfPlayer(playerName));
     }
 
-    public void addLoose(String playerName) {
+    public void addLose(String playerName) {
         ContentValues values = new ContentValues();
         ArrayList<Integer> playerScore = readScoreOfPlayer(playerName);
-        Integer loose = playerScore.get(1)+1;
-        values.put(COLUMN_LOSE, loose);
-        System.out.println("L " + loose);
-        System.out.println(playerName);
+        Integer lose = playerScore.get(1)+1;
+        values.put(COLUMN_LOSE, lose);
         database.update(TABLE_USERDATA, values, COLUMN_NAME + "=?", new String[]{playerName});
-        System.out.println("Inserted Loose" + readScoreOfPlayer(playerName));
     }
 
 
@@ -120,16 +114,13 @@ public class SqLiteDatabaseManager extends SQLiteOpenHelper {
         ArrayList<Integer> playerScore = new ArrayList<>();
 
         Integer wins;
-        Integer looses;
+        Integer loses;
         Cursor cursor = database.rawQuery("SELECT " + COLUMN_WIN + ", " + COLUMN_LOSE + " FROM " + TABLE_USERDATA + " WHERE " + COLUMN_NAME + " =?;", new String[]{playerName.trim()});
-        System.out.println("Size of cursor " + cursor.getCount());
         if(cursor.moveToNext()) {
             wins = cursor.getInt(0);
-            System.out.println("getScore Wins: " + wins);
             playerScore.add(wins);
-            looses = cursor.getInt(1);
-            System.out.println("getScore Looses: " + looses);
-            playerScore.add(looses);
+            loses = cursor.getInt(1);
+            playerScore.add(loses);
         }
 
         cursor.close();

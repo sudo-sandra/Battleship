@@ -157,8 +157,6 @@ public class DBConnection {
                         if(enemy == null){
                             enemy = "Enemy";
                         }
-                        System.out.println(enemy);
-                        System.out.println(currentUser.getName());
                         if(!enemy.equals(currentUser.getName())){
                             listener.getEnemyName(enemy);
                             playerInfo = "playerTwo";
