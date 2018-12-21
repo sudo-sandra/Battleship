@@ -29,7 +29,6 @@ public class PlayerTwoGame extends AppCompatActivity{
         turn_text = (TextView)findViewById(R.id.turn_text);
         enemy_name = intent.getStringExtra("player_name");
         user_name = intent.getStringExtra("player1_name");
-        System.out.println(enemy_name + "   " + user_name);
         turn_text.setText(enemy_name);
         battle = (Battleship) intent.getSerializableExtra("battle");
         enemyBattle = (Battleship) intent.getSerializableExtra("enemy_battle");

@@ -18,7 +18,6 @@ public class Waiting extends AppCompatActivity {
 
             @Override
             public void getMap(String map) {
-                System.out.println("getMap");
                 Intent gameIntent = new Intent();
                 gameIntent.putExtra("map", map);
                 setResult(Activity.RESULT_OK, gameIntent);
